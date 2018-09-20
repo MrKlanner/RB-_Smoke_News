@@ -1,16 +1,23 @@
 package ru.rbc.kskabort;
 
+import com.sun.webkit.Timer;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.rules.Stopwatch;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.support.ui.SystemClock;
 
 import java.awt.*;
+import java.time.Clock;
+import java.time.Duration;
+import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.assertEquals;
@@ -22,7 +29,8 @@ public class FirstTest {
 
     @BeforeClass
     public static void setup() {
-        System.setProperty("webdriver.chrome.driver", "C:/Users/Kosta/Documents/chrome_driver/chromedriver.exe");
+        System.setProperty("webdriver.chrome.driver", "C:/Users/kskabort/Documents/chrome_driver/chromedriver.exe");
+
         //Для режима инкогнито
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--incognito");
@@ -37,42 +45,62 @@ public class FirstTest {
 
     @Test
     public void test_smoke() throws InterruptedException, AWTException {
-        driver.get("https://rbc.ru");
+        /** Проверка подгрузки пока что в разработке. Хотелось бы реализовать с таймером,
+         * параллельно считающим во время работы программы и в определенный момент (5-10 мин.)
+         * срабтывающий, давая тем самым отмашку допроверять автоподгрузку)*/
+
+        //Проверка Автоподгрузки (Проверка в ручном режиме, продолжение в конце)
+        driver.get("https://staging.rbc.ru");
+        TabActions.New();
+        ArrayList<String> tabs2 = new ArrayList<String> (driver.getWindowHandles()); // Получение списка вкладок
+        driver.switchTo().window(tabs2.get(1)); // Переключение на вторую вкладку
+
+        /*Clock clock = Clock.systemUTC();
+        //Duration tickDuration = Duration.ofMinutes(15);
+        System.out.println(clock);*/
 
         //Проверка Тайтла
-        assertEquals(driver.getTitle(), "РБК — новости, акции, курсы валют, доллар, евро");
+        driver.get("https://staging.rbc.ru");
+        assertEquals(driver.getTitle(), "РБК — новости, акции, курсы валют, доллар, евроаапма");
         System.out.println(ConsoleColors.YELLOW_BOLD_BRIGHT + "Проверка TITLE успешно завершена" + ConsoleColors.RESET);
-
-        /*try {
-            assertEquals(driver.getTitle(), "РБК — новости, акции, курсы валют, доллар, евро");
-        } catch (Error e) {
-            verificationErrors.append(e.toString());
-        }*/
 
         //Проверка поиска
         driver.findElement(By.xpath("(.//*[normalize-space(text()) and normalize-space(.)='News'])[2]/following::span[1]")).click();
         driver.findElement(By.xpath("(.//*[normalize-space(text()) and normalize-space(.)='News'])[2]/following::input[2]")).click();
-        assertEquals(driver.getTitle(), "РБК — новости, акции, курсы валют, доллар, евро");
+        assertEquals(driver.getTitle(), "РБК — новости, акции, курсы валют, доллар, евро"); // проверка error 404
         System.out.println(ConsoleColors.YELLOW_BOLD_BRIGHT + "Проверка ПОИСКА успешно завершена" + ConsoleColors.RESET);
 
-        //Лента новостей
+        //Лента новостей. Часть 1
         driver.get("https://rbc.ru");
         String lenta_text = driver.findElement(By.xpath("(.//*[normalize-space(text()) and normalize-space(.)='Лента новостей'])[1]/following::span[1]")).getText();
-
-        /*TabActions.New();
-        TabActions.Switch();
-        TabActions.Close();*/
-        //String selectLinkOpeninNewTab = Keys.chord(Keys.CONTROL,"t");
-        //driver.findElement(By.cssSelector("body")).sendKeys(selectLinkOpeninNewTab);
-        //driver.findElement(By.cssSelector("body")).sendKeys(Keys.chord(Keys.CONTROL, Keys.getKeyFromUnicode('\u0061')));
-        //driver.findElement(By.cssSelector("body")).sendKeys(Keys.CONTROL + "t"); //новая вкладка
-
-        driver.get("https://rbc.ru"); // https://staging.rbc.ru
+        driver.get("https://staging.rbc.ru");
         String lenta_text1 = driver.findElement(By.xpath("(.//*[normalize-space(text()) and normalize-space(.)='Лента новостей'])[1]/following::span[1]")).getText();
         assertEquals(lenta_text, lenta_text1);
         driver.manage().timeouts().implicitlyWait(10, TimeUnit.MINUTES);
         driver.findElement(By.cssSelector("body")).sendKeys(Keys.ESCAPE);
-        System.out.println(ConsoleColors.YELLOW_BOLD_BRIGHT + "Проверка ленты новостей успешно завершена" + ConsoleColors.RESET);
+        System.out.println(ConsoleColors.YELLOW_BOLD_BRIGHT + "Проверка ЛЕНТЫ НОВОСТЕЙ (Часть 1) успешно завершена" + ConsoleColors.RESET);
+
+        //Лента новостей. Часть 2
+        driver.get("https://staging.rbc.ru");
+        String lenta_url = driver.findElement(By.cssSelector(".news-feed__item:nth-child(2)")).getAttribute("href");
+        driver.get(lenta_url);
+        if (driver.findElement(By.cssSelector("head > meta:nth-child(23)")).getText().equals(lenta_url))
+            System.out.println(ConsoleColors.YELLOW_BOLD_BRIGHT + "Проверка ЛЕНТЫ НОВОСТЕЙ (Часть 2) успешно завершена" + ConsoleColors.RESET);
+
+
+
+        /*//Переключение вкладок
+        TabActions.New();
+        ArrayList<String> tabs2 = new ArrayList<String> (driver.getWindowHandles()); // Получение списка вкладок
+        driver.switchTo().window(tabs2.get(1)); // Переклюение на вторую вкладку
+        //driver.switchTo().window(tabs2.get(0)); // Переключение на первую вкладку*/
+
+
+        //String selectLinkOpeninNewTab = Keys.chord(Keys.CONTROL,"t");
+        //driver.findElement(By.cssSelector("body")).sendKeys(selectLinkOpeninNewTab);
+
+        //driver.findElement(By.cssSelector("body")).sendKeys(Keys.chord(Keys.CONTROL, Keys.getKeyFromUnicode('\u0061')));
+        //driver.findElement(By.cssSelector("body")).sendKeys(Keys.CONTROL + "t"); //новая вкладка
 
         /* Проверка тайтла статьи из ленты
         String test = driver.findElement(By.cssSelector(".news-feed__item:nth-child(2) .news-feed__item__title")).getText();
@@ -89,7 +117,6 @@ public class FirstTest {
         System.out.println(ConsoleColors.YELLOW_BOLD_BRIGHT + "Смок-тест завершен" + ConsoleColors.RESET);
         driver.quit();
     }
-
 
    /* public void CloseFullscreen()
     {

@@ -35,5 +35,14 @@ public class TabActions {
         robot.keyRelease(KeyEvent.VK_F4);
     }
 
+    public static void Open_in_new_tab() throws AWTException, InterruptedException {
+        Robot robot = new Robot();
+        robot.keyPress(KeyEvent.VK_CONTROL);
+        Thread.sleep(500);
+        robot.keyPress(KeyEvent.VK_ENTER);
+        Thread.sleep(500);
+        robot.keyRelease(KeyEvent.VK_ENTER);
+        robot.keyRelease(KeyEvent.VK_CONTROL);
+    }
 
 }
