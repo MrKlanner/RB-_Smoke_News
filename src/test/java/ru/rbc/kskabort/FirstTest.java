@@ -28,7 +28,7 @@ public class FirstTest {
     //private StringBuffer verificationErrors = new StringBuffer();
 
     @BeforeClass
-    public static void setup() {
+    public static void setup() throws InterruptedException, AWTException {
         System.setProperty("webdriver.chrome.driver", "C:/Users/kskabort/Documents/chrome_driver/chromedriver.exe");
 
         //Для режима инкогнито
@@ -39,37 +39,59 @@ public class FirstTest {
         driver = new ChromeDriver(capabilities); //новое окно инкогнито
         //driver = new ChromeDriver();
         driver.manage().deleteAllCookies(); //чистим куки
-        driver.manage().window().maximize();
-        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-    }
+        //driver.manage().window().maximize();
 
-    @Test
-    public void test_smoke() throws InterruptedException, AWTException {
+        // устанавливаем таймаут ожидания загрузки
+        //driver.manage().timeouts().pageLoadTimeout(10, TimeUnit.SECONDS);
+        driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
+        driver.manage().window().maximize();
+
+        System.out.println(ConsoleColors.RED_BOLD_BRIGHT + "--------------------------------------------" + ConsoleColors.RESET);
+
         /** Проверка подгрузки пока что в разработке. Хотелось бы реализовать с таймером,
          * параллельно считающим во время работы программы и в определенный момент (5-10 мин.)
          * срабтывающий, давая тем самым отмашку допроверять автоподгрузку)*/
 
         //Проверка Автоподгрузки (Проверка в ручном режиме, продолжение в конце)
         driver.get("https://staging.rbc.ru");
+
+        //Закрываем поп ап с предложением подписки
+        driver.findElement(By.cssSelector(".push-allow__item:nth-child(2)")).click();
+
         TabActions.New();
         ArrayList<String> tabs2 = new ArrayList<String> (driver.getWindowHandles()); // Получение списка вкладок
         driver.switchTo().window(tabs2.get(1)); // Переключение на вторую вкладку
+    }
 
-        /*Clock clock = Clock.systemUTC();
-        //Duration tickDuration = Duration.ofMinutes(15);
-        System.out.println(clock);*/
-
+    @Test
+    public void test_title() {
         //Проверка Тайтла
         driver.get("https://staging.rbc.ru");
-        assertEquals(driver.getTitle(), "РБК — новости, акции, курсы валют, доллар, евроаапма");
+        assertEquals(driver.getTitle(), "РБК — новости, акции, курсы валют, доллар, евро");
         System.out.println(ConsoleColors.YELLOW_BOLD_BRIGHT + "Проверка TITLE успешно завершена" + ConsoleColors.RESET);
+    }
 
+    @Test
+    public void test_search() {
         //Проверка поиска
-        driver.findElement(By.xpath("(.//*[normalize-space(text()) and normalize-space(.)='News'])[2]/following::span[1]")).click();
-        driver.findElement(By.xpath("(.//*[normalize-space(text()) and normalize-space(.)='News'])[2]/following::input[2]")).click();
+        driver.findElement(By.cssSelector("div.topline__search__menu.js-search-open")).click();
+        String t = "Путин";
+        driver.findElement(By.cssSelector("input.topline__search__input")).sendKeys(t);
+        driver.findElement(By.cssSelector("input.topline__search__button")).click();
         assertEquals(driver.getTitle(), "РБК — новости, акции, курсы валют, доллар, евро"); // проверка error 404
+        String p;
+        for (int i = 1; i <= 5; i++) {
+            p = driver.findElement(By.cssSelector("div.search-item:nth-child(" + Integer.toString(i) + ") span.search-item__text")).getText();
+            if (!p.contains(t)) {
+                System.out.println(ConsoleColors.RED_BOLD_BRIGHT + "Проверка поиска провалена" + ConsoleColors.RESET);
+                break;
+            }
+        }
         System.out.println(ConsoleColors.YELLOW_BOLD_BRIGHT + "Проверка ПОИСКА успешно завершена" + ConsoleColors.RESET);
+    }
 
+    @Test
+    public void test_lenta1() {
         //Лента новостей. Часть 1
         driver.get("https://rbc.ru");
         String lenta_text = driver.findElement(By.xpath("(.//*[normalize-space(text()) and normalize-space(.)='Лента новостей'])[1]/following::span[1]")).getText();
@@ -82,11 +104,10 @@ public class FirstTest {
 
         //Лента новостей. Часть 2
         driver.get("https://staging.rbc.ru");
-        String lenta_url = driver.findElement(By.cssSelector(".news-feed__item:nth-child(2)")).getAttribute("href");
+        String lenta_url = driver.findElement(By.cssSelector(".news-feed__item:nth-child(2)")).getAttribute("href") - "https://staging.rbc.ru"; // доработать
         driver.get(lenta_url);
-        if (driver.findElement(By.cssSelector("head > meta:nth-child(23)")).getText().equals(lenta_url))
+        if (driver.findElement(By.cssSelector("head > meta:nth-child(15)")).getAttribute("content").contains(lenta_url))
             System.out.println(ConsoleColors.YELLOW_BOLD_BRIGHT + "Проверка ЛЕНТЫ НОВОСТЕЙ (Часть 2) успешно завершена" + ConsoleColors.RESET);
-
 
 
         /*//Переключение вкладок
@@ -113,7 +134,7 @@ public class FirstTest {
 
 
     @AfterClass()
-    public static void tearDown() throws Exception {
+    public static void tearDown() {
         System.out.println(ConsoleColors.YELLOW_BOLD_BRIGHT + "Смок-тест завершен" + ConsoleColors.RESET);
         driver.quit();
     }
