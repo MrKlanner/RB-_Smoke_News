@@ -104,7 +104,7 @@ public class FirstTest {
 
         //Лента новостей. Часть 2
         driver.get("https://staging.rbc.ru");
-        String lenta_url = driver.findElement(By.cssSelector(".news-feed__item:nth-child(2)")).getAttribute("href") - "https://staging.rbc.ru"; // доработать
+        String lenta_url = driver.findElement(By.cssSelector(".news-feed__item:nth-child(2)")).getAttribute("href"); // доработать
         driver.get(lenta_url);
         if (driver.findElement(By.cssSelector("head > meta:nth-child(15)")).getAttribute("content").contains(lenta_url))
             System.out.println(ConsoleColors.YELLOW_BOLD_BRIGHT + "Проверка ЛЕНТЫ НОВОСТЕЙ (Часть 2) успешно завершена" + ConsoleColors.RESET);
