@@ -13,6 +13,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.ui.SystemClock;
+import ru.rbc.kskabort.URLs.*;
 
 import java.awt.*;
 import java.time.Clock;
@@ -103,9 +104,11 @@ public class FirstTest {
         System.out.println(ConsoleColors.YELLOW_BOLD_BRIGHT + "Проверка ЛЕНТЫ НОВОСТЕЙ (Часть 1) успешно завершена" + ConsoleColors.RESET);
 
         //Лента новостей. Часть 2
-        driver.get("https://staging.rbc.ru");
+        driver.get(Staging.NEWS);
         String lenta_url = driver.findElement(By.cssSelector(".news-feed__item:nth-child(2)")).getAttribute("href"); // доработать
         driver.get(lenta_url);
+        int k = Staging.NEWS.length();
+        lenta_url = lenta_url.substring(k+1, lenta_url.length() - "?from=newsfeed".length());
         if (driver.findElement(By.cssSelector("head > meta:nth-child(15)")).getAttribute("content").contains(lenta_url))
             System.out.println(ConsoleColors.YELLOW_BOLD_BRIGHT + "Проверка ЛЕНТЫ НОВОСТЕЙ (Часть 2) успешно завершена" + ConsoleColors.RESET);
 
