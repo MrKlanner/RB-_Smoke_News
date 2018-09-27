@@ -5,10 +5,8 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.rules.Stopwatch;
-import org.openqa.selenium.By;
-import org.openqa.selenium.Keys;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.junit.rules.Timeout;
+import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -22,6 +20,16 @@ import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.assertEquals;
+
+
+/**Планы:
+ * 1) Проверка подгрузки пока что в разработке. Хотелось бы реализовать с таймером,
+ *    параллельно считающим во время работы программы и в определенный момент (5-10 мин.)
+ *    срабтывающий, давая тем самым отмашку допроверять автоподгрузку)
+ * 2) Обработка исключений (не найден элемент и т.д.)
+ * 3) Выполнять проверку загрузки каждый раз и приостанавливать загрузку если больше какого-то определенного промежутка времени
+ * */
+
 
 public class FirstTest {
 
@@ -43,18 +51,16 @@ public class FirstTest {
         //driver.manage().window().maximize();
 
         // устанавливаем таймаут ожидания загрузки
-        //driver.manage().timeouts().pageLoadTimeout(10, TimeUnit.SECONDS);
-        driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
+        driver.manage().timeouts().pageLoadTimeout(10, TimeUnit.SECONDS);
+        driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
         driver.manage().window().maximize();
 
-        System.out.println(ConsoleColors.RED_BOLD_BRIGHT + "--------------------------------------------" + ConsoleColors.RESET);
-
-        /** Проверка подгрузки пока что в разработке. Хотелось бы реализовать с таймером,
-         * параллельно считающим во время работы программы и в определенный момент (5-10 мин.)
-         * срабтывающий, давая тем самым отмашку допроверять автоподгрузку)*/
+        System.out.println(ConsoleColors.RED_BOLD_BRIGHT + "-----------------------------------------------------------" + ConsoleColors.RESET);
 
         //Проверка Автоподгрузки (Проверка в ручном режиме, продолжение в конце)
-        driver.get("https://staging.rbc.ru");
+        try {driver.get(Staging.NEWS);}
+        catch (TimeoutException ignore)
+        {}
 
         //Закрываем поп ап с предложением подписки
         driver.findElement(By.cssSelector(".push-allow__item:nth-child(2)")).click();
@@ -68,6 +74,11 @@ public class FirstTest {
     public void test_title() {
         //Проверка Тайтла
         driver.get("https://staging.rbc.ru");
+        try {WebElement full_close = driver.findElement(By.cssSelector("body > div.news #closeButton_1239"));
+        if (full_close.isEnabled())
+            full_close.click();}
+        catch (NoSuchElementException ignore) {}
+
         assertEquals(driver.getTitle(), "РБК — новости, акции, курсы валют, доллар, евро");
         System.out.println(ConsoleColors.YELLOW_BOLD_BRIGHT + "Проверка TITLE успешно завершена" + ConsoleColors.RESET);
     }
@@ -99,8 +110,6 @@ public class FirstTest {
         driver.get("https://staging.rbc.ru");
         String lenta_text1 = driver.findElement(By.xpath("(.//*[normalize-space(text()) and normalize-space(.)='Лента новостей'])[1]/following::span[1]")).getText();
         assertEquals(lenta_text, lenta_text1);
-        driver.manage().timeouts().implicitlyWait(10, TimeUnit.MINUTES);
-        driver.findElement(By.cssSelector("body")).sendKeys(Keys.ESCAPE);
         System.out.println(ConsoleColors.YELLOW_BOLD_BRIGHT + "Проверка ЛЕНТЫ НОВОСТЕЙ (Часть 1) успешно завершена" + ConsoleColors.RESET);
 
         //Лента новостей. Часть 2
