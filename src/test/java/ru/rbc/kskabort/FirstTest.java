@@ -13,6 +13,7 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.ui.SystemClock;
 import ru.rbc.kskabort.URLs.*;
 
+import javax.rmi.CORBA.PortableRemoteObjectDelegate;
 import java.awt.*;
 import java.time.Clock;
 import java.time.Duration;
@@ -67,18 +68,19 @@ public class FirstTest {
 
         TabActions.New();
         ArrayList<String> tabs2 = new ArrayList<String> (driver.getWindowHandles()); // Получение списка вкладок
-        driver.switchTo().window(tabs2.get(1)); // Переключение на вторую вкладку
+        try {driver.switchTo().window(tabs2.get(1));}// Переключение на вторую вкладку
+        catch (IndexOutOfBoundsException e)
+        {
+            TabActions.New();
+            driver.switchTo().window(tabs2.get(1));// Переключение на вторую вкладку
+        }
     }
 
     @Test
     public void test_title() {
         //Проверка Тайтла
         driver.get("https://staging.rbc.ru");
-        try {WebElement full_close = driver.findElement(By.cssSelector("body > div.news #closeButton_1239"));
-        if (full_close.isEnabled())
-            full_close.click();}
-        catch (NoSuchElementException ignore) {}
-
+        closeFull();
         assertEquals(driver.getTitle(), "РБК — новости, акции, курсы валют, доллар, евро");
         System.out.println(ConsoleColors.YELLOW_BOLD_BRIGHT + "Проверка TITLE успешно завершена" + ConsoleColors.RESET);
     }
@@ -87,9 +89,11 @@ public class FirstTest {
     public void test_search() {
         //Проверка поиска
         driver.findElement(By.cssSelector("div.topline__search__menu.js-search-open")).click();
+        closeFull();
         String t = "Путин";
         driver.findElement(By.cssSelector("input.topline__search__input")).sendKeys(t);
         driver.findElement(By.cssSelector("input.topline__search__button")).click();
+        closeFull();
         assertEquals(driver.getTitle(), "РБК — новости, акции, курсы валют, доллар, евро"); // проверка error 404
         String p;
         for (int i = 1; i <= 5; i++) {
@@ -103,19 +107,26 @@ public class FirstTest {
     }
 
     @Test
-    public void test_lenta1() {
+    public void test_lenta1(){
         //Лента новостей. Часть 1
-        driver.get("https://rbc.ru");
-        String lenta_text = driver.findElement(By.xpath("(.//*[normalize-space(text()) and normalize-space(.)='Лента новостей'])[1]/following::span[1]")).getText();
-        driver.get("https://staging.rbc.ru");
-        String lenta_text1 = driver.findElement(By.xpath("(.//*[normalize-space(text()) and normalize-space(.)='Лента новостей'])[1]/following::span[1]")).getText();
-        assertEquals(lenta_text, lenta_text1);
+        String lnk = Prod.NEWS;
+        try {driver.get(lnk);}
+        catch (TimeoutException ignore)
+        {}
+        closeFull();
+        String lenta_text = driver.findElement(By.cssSelector(".news-feed__item:nth-child(2)")).getAttribute("href");
+        driver.get(Staging.NEWS);
+        closeFull();
+        String lenta_text1 = driver.findElement(By.cssSelector(".news-feed__item:nth-child(2)")).getAttribute("href");
+        assertEquals(modifyUrl(lenta_text), modifyUrl(lenta_text1));
         System.out.println(ConsoleColors.YELLOW_BOLD_BRIGHT + "Проверка ЛЕНТЫ НОВОСТЕЙ (Часть 1) успешно завершена" + ConsoleColors.RESET);
 
         //Лента новостей. Часть 2
         driver.get(Staging.NEWS);
+        closeFull();
         String lenta_url = driver.findElement(By.cssSelector(".news-feed__item:nth-child(2)")).getAttribute("href"); // доработать
-        driver.get(lenta_url);
+        driver.get(lenta_url); //?
+        closeFull();
         int k = Staging.NEWS.length();
         lenta_url = lenta_url.substring(k+1, lenta_url.length() - "?from=newsfeed".length());
         if (driver.findElement(By.cssSelector("head > meta:nth-child(15)")).getAttribute("content").contains(lenta_url))
@@ -151,6 +162,38 @@ public class FirstTest {
         driver.quit();
     }
 
+
+    private void closeFull () {
+        try {
+            if (driver.findElement(By.cssSelector("body > div.news #closeButton_1239")).isEnabled())
+                driver.findElement(By.cssSelector("body > div.news #closeButton_1239")).click();
+        } catch (NoSuchElementException ignore) {
+        }
+    }
+
+    private String modifyUrl (String lnk)
+    {
+        if (lnk.contains("www"))
+            return lnk.substring(11);
+        else if (lnk.contains("staging.")){
+            if (lnk.contains("staging.v"))
+                return lnk.substring(18);
+            else
+                return lnk.substring(15);
+        }
+        else if (lnk.contains(".test")){
+            if (lnk.contains(".test.v"))
+                return lnk.substring(15);
+            for (int i=1; i <= 4; i++)
+            {
+                if (lnk.contains(".test" + Integer.toString(i) + '.'))
+                        return lnk.substring(13);
+            }
+            return lnk.substring(12);
+        }
+        else
+            return lnk.substring(7);
+    }
    /* public void CloseFullscreen()
     {
         NotEmpty(driver.findElement())

@@ -1,7 +1,7 @@
 package ru.rbc.kskabort;
 
 class URLs {
-    public class Prod {
+    class Prod {
         static final String NEWS = "https://www.rbc.ru";
         static final String AUTO = "https://www.autonews.ru/";
         static final String TV = "http://tv.rbc.ru/";
@@ -15,10 +15,10 @@ class URLs {
         static final String MARKETING = "https://marketing.rbc.ru/";
         static final String RBC500 = "https://rbc.ru/rbc500//";
         static final String RNV = "http://cash.rbc.ru/";
-        static final String RBCPLUS = "http://rbcplus.ru/";
+        static final String RBCPLUS = "http://www.rbcplus.ru/";
         //static final String ZOOM = "http://zoom.cnews.ru/";
     }
-    public class Staging {
+    class Staging {
         static final String NEWS = "https://staging.rbc.ru";
         static final String AUTO = "https://staging.autonews.ru/";
         static final String TV = "http://staging.v4.tv.rbc.ru/";
@@ -35,7 +35,8 @@ class URLs {
         static final String RBCPLUS = "http://staging.v2.rbcplus.ru/";
 
     }
-    public class Test{
+
+    class Test{
         static final String NEWS_REGULAR = "https://test.rbc.ru";
         static final String NEWS_2 = "https://test2.rbc.ru";
         static final String NEWS_3 = "https://test3.rbc.ru";
