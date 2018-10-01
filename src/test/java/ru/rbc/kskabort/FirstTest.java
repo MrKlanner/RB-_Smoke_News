@@ -1,3 +1,11 @@
+/**Планы:
+ * 1) Проверка подгрузки пока что в разработке. Хотелось бы реализовать с таймером,
+ *    параллельно считающим во время работы программы и в определенный момент (5-10 мин.)
+ *    срабтывающий, давая тем самым отмашку допроверять автоподгрузку)
+ * 2) Обработка исключений (не найден элемент и т.д.)
+ * 3) Выполнять проверку загрузки каждый раз и приостанавливать загрузку если больше какого-то определенного промежутка времени
+ * */
+
 package ru.rbc.kskabort;
 
 import com.sun.webkit.Timer;
@@ -9,6 +17,7 @@ import org.junit.rules.Timeout;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.ui.SystemClock;
 import ru.rbc.kskabort.URLs.*;
@@ -21,15 +30,6 @@ import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.assertEquals;
-
-
-/**Планы:
- * 1) Проверка подгрузки пока что в разработке. Хотелось бы реализовать с таймером,
- *    параллельно считающим во время работы программы и в определенный момент (5-10 мин.)
- *    срабтывающий, давая тем самым отмашку допроверять автоподгрузку)
- * 2) Обработка исключений (не найден элемент и т.д.)
- * 3) Выполнять проверку загрузки каждый раз и приостанавливать загрузку если больше какого-то определенного промежутка времени
- * */
 
 
 public class FirstTest {
@@ -107,12 +107,13 @@ public class FirstTest {
     }
 
     @Test
-    public void test_lenta1(){
+    public void test_lenta1() {
         //Лента новостей. Часть 1
         String lnk = Prod.NEWS;
-        try {driver.get(lnk);}
-        catch (TimeoutException ignore)
-        {}
+        try {
+            driver.get(lnk);
+        } catch (TimeoutException ignore) {
+        }
         closeFull();
         String lenta_text = driver.findElement(By.cssSelector(".news-feed__item:nth-child(2)")).getAttribute("href");
         driver.get(Staging.NEWS);
@@ -128,11 +129,22 @@ public class FirstTest {
         driver.get(lenta_url); //?
         closeFull();
         int k = Staging.NEWS.length();
-        lenta_url = lenta_url.substring(k+1, lenta_url.length() - "?from=newsfeed".length());
-        if (driver.findElement(By.cssSelector("head > meta:nth-child(15)")).getAttribute("content").contains(lenta_url))
+        lenta_url = lenta_url.substring(k + 1, lenta_url.length() - "?from=newsfeed".length());
+        if (driver.getCurrentUrl().contains(lenta_url))
             System.out.println(ConsoleColors.YELLOW_BOLD_BRIGHT + "Проверка ЛЕНТЫ НОВОСТЕЙ (Часть 2) успешно завершена" + ConsoleColors.RESET);
+    }
 
 
+    @Test
+    public void test_shapka(){
+        driver.get(Staging.NEWS);
+        Actions actions = new Actions(driver);
+        actions.keyDown(Keys.LEFT_CONTROL)
+                .click(driver.findElement(By.xpath("/html/body/div[8]/div/div[1]/div/div[2]/div[1]/div[1]/a[5]")))
+                .keyUp(Keys.LEFT_CONTROL)
+                .build()
+                .perform();
+    }
         /*//Переключение вкладок
         TabActions.New();
         ArrayList<String> tabs2 = new ArrayList<String> (driver.getWindowHandles()); // Получение списка вкладок
@@ -152,8 +164,6 @@ public class FirstTest {
         driver.findElement(By.xpath("(.//*[normalize-space(text()) and normalize-space(.)='Лента новостей'])[1]/following::span[1]")).click();
         String real_title = driver.getTitle();
         */
-
-    }
 
 
     @AfterClass()
