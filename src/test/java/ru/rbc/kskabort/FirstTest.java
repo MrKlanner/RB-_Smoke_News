@@ -8,24 +8,18 @@
 
 package ru.rbc.kskabort;
 
-import com.sun.webkit.Timer;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.rules.Stopwatch;
-import org.junit.rules.Timeout;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.support.ui.SystemClock;
 import ru.rbc.kskabort.URLs.*;
 
-import javax.rmi.CORBA.PortableRemoteObjectDelegate;
 import java.awt.*;
-import java.time.Clock;
-import java.time.Duration;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
@@ -67,13 +61,8 @@ public class FirstTest {
         driver.findElement(By.cssSelector(".push-allow__item:nth-child(2)")).click();
 
         TabActions.New();
-        ArrayList<String> tabs2 = new ArrayList<String> (driver.getWindowHandles()); // Получение списка вкладок
-        try {driver.switchTo().window(tabs2.get(1));}// Переключение на вторую вкладку
-        catch (IndexOutOfBoundsException e)
-        {
-            TabActions.New();
-            driver.switchTo().window(tabs2.get(1));// Переключение на вторую вкладку
-        }
+        ArrayList<String> tabs2 = new ArrayList<>(driver.getWindowHandles()); // Получение списка вкладок
+        driver.switchTo().window(tabs2.get(1));// Переключение на вторую вкладку
     }
 
     @Test
@@ -136,14 +125,42 @@ public class FirstTest {
 
 
     @Test
-    public void test_shapka(){
+    public void test_shapka() throws InterruptedException, AWTException {
         driver.get(Staging.NEWS);
         Actions actions = new Actions(driver);
-        actions.keyDown(Keys.LEFT_CONTROL)
-                .click(driver.findElement(By.xpath("/html/body/div[8]/div/div[1]/div/div[2]/div[1]/div[1]/a[5]")))
-                .keyUp(Keys.LEFT_CONTROL)
-                .build()
-                .perform();
+        //Проверка эмблемы из топлайна
+        actions.keyDown(Keys.LEFT_CONTROL).click(driver.findElement(By.cssSelector(".topline__item_logo"))).keyUp(Keys.LEFT_CONTROL).build().perform();
+        ArrayList<String> tabs2 = new ArrayList<>(driver.getWindowHandles()); // Получение списка вкладок
+        driver.switchTo().window(tabs2.get(2));// Переключение на третью вкладку
+        assertEquals(driver.getCurrentUrl(), Staging.NEWS);
+        TabActions.Close();
+        driver.switchTo().window(tabs2.get(1));// Переключение на вторую вкладку
+        tabs2.remove(2);
+
+        String[] mass = new String[]{Prod.TV, Prod.NEWSPAPER, Prod.MAGAZINE, Prod.RBCPLUS, Prod.QUOTE, Prod.CRYPTO, Prod.AUTO, Prod.REALTY, Prod.STYLE, Prod.PRO, Prod.PINK, Prod.MARKETING};// ДОПИСАТЬ!!!
+
+        for (int i = 4; i<=21; i++)
+        {
+            if (i <= 6)
+                actions.keyDown(Keys.LEFT_CONTROL).click(driver.findElement(By.cssSelector(".topline__item_important:nth-child(" + Integer.toString(i) + ")"))).keyUp(Keys.LEFT_CONTROL).build().perform();
+            else
+                actions.keyDown(Keys.LEFT_CONTROL).click(driver.findElement(By.cssSelector(".topline__item:nth-child(" + Integer.toString(i) + ")"))).keyUp(Keys.LEFT_CONTROL).build().perform();
+            ArrayList<String> tabs = new ArrayList<>(driver.getWindowHandles());
+            driver.switchTo().window(tabs.get(2));// Переключение на третью вкладку
+            assertEquals(driver.getCurrentUrl(), mass[i-4]+"?utm_source=topline");
+            TabActions.Close();
+            driver.switchTo().window(tabs.get(1));// Перключение на вторую вкладку
+            tabs.remove(2);
+        }
+
+
+        //Actions close = new Actions(driver);
+        //close.keyDown(Keys.LEFT_CONTROL).pause(1).sendKeys(Keys.F4).keyUp(Keys.LEFT_CONTROL).build().perform();
+        //driver.switchTo().window(tabs2.get(1));// Переключение на вторую вкладку
+
+        //actions.keyDown(Keys.LEFT_CONTROL).click(driver.findElement(By.cssSelector(".topline__item_important:nth-child(4)"))).keyUp(Keys.LEFT_CONTROL).build().perform();
+        //assertEquals(driver.getCurrentUrl(), Prod.TV);
+
     }
         /*//Переключение вкладок
         TabActions.New();
@@ -164,6 +181,7 @@ public class FirstTest {
         driver.findElement(By.xpath("(.//*[normalize-space(text()) and normalize-space(.)='Лента новостей'])[1]/following::span[1]")).click();
         String real_title = driver.getTitle();
         */
+
 
 
     @AfterClass()
