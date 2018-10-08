@@ -9,6 +9,7 @@
 package ru.rbc.kskabort;
 
 import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openqa.selenium.*;
@@ -65,6 +66,9 @@ public class FirstTest {
         driver.switchTo().window(tabs2.get(1));// Переключение на вторую вкладку
     }
 
+    @Before
+
+
     @Test
     public void test_title() {
         //Проверка Тайтла
@@ -98,9 +102,9 @@ public class FirstTest {
     @Test
     public void test_lenta1() {
         //Лента новостей. Часть 1
-        String lnk = Prod.NEWS;
+        //String lnk = Prod.NEWS;
         try {
-            driver.get(lnk);
+            driver.get(Prod.NEWS);
         } catch (TimeoutException ignore) {
         }
         closeFull();

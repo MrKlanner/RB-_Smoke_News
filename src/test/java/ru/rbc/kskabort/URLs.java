@@ -6,6 +6,15 @@
 package ru.rbc.kskabort;
 
 class URLs {
+
+    class News {
+        static final String PROD = "https://www.rbc.ru/";
+        static final String STAGE = "https://staging.rbc.ru/";
+        static final String NEWS_REGULAR = "https://test.rbc.ru/";
+        static final String NEWS_2 = "https://test2.rbc.ru/";
+        static final String NEWS_3 = "https://test3.rbc.ru/";
+    }
+
     class Prod {
         static final String NEWS = "https://www.rbc.ru/";
         static final String AUTO = "https://www.autonews.ru/";
@@ -56,7 +65,7 @@ class URLs {
         static final String PINK = "https://test.v1.pink.rbc.ru/";
         static final String NEWSPAPER = "https://test.rbc.ru/newspaper/";
         static final String MAGAZINE = "https://test.rbc.ru/magazine/";
-        static final String CRYPTO = "https://test.rbc.ru/crypto/"; //!!
+        static final String CRYPTO = "https://test.rbc.ru/crypto/"; // !!
         static final String SPORT = "https://test.sportrbc.ru/";
         static final String REALTY = "https://test.v4.realty.rbc.ru/";
         static final String QUOTE = "https://test.v4.quote.rbc.ru/";
@@ -67,8 +76,19 @@ class URLs {
         static final String PRO = "https://staging.pro.rbc.ru/";// !!
     }
 
-/*    String[] i_need_mass (String param){
+   /* class Other{
+        static final String BIZTORG = "http://biztorg.ru/offers/";
+        static final String  = "http://biztorg.ru/franchises/";
+
+    }
+
+    String[] i_need_mass (String param){
+        String mass = {Prod.TV, Prod.NEWSPAPER, Prod.MAGAZINE, Prod.RBCPLUS, Prod.QUOTE, Prod.CRYPTO, Prod.AUTO, Prod.REALTY, Prod.STYLE, Prod.PRO, Prod.PINK, Prod.MARKETING,
         if (param == "topline")
+            for (int i = 0; i< 22; i++)
+            {
+
+            }
 
     }*/
 }
