@@ -2,7 +2,8 @@ package ru.rbc.kskabort;
 
 /** Небольшой пример правильного использования Actions!
  * Actions actions = new Actions(driver);
- * actions.keyDown(Keys.LEFT_CONTROL)
+ * actions
+ *     .keyDown(Keys.LEFT_CONTROL)
  *     .click(first_WebElement)
  *     .click(second_WebElement)
  *     .click(third_WebElement)

@@ -22,7 +22,10 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
+import static java.lang.Thread.sleep;
 import static org.junit.Assert.assertEquals;
+import static ru.rbc.kskabort.URLs.SPLIT;
+
 
 
 public class FirstTest {
@@ -34,7 +37,7 @@ public class FirstTest {
     public static void setup() throws InterruptedException, AWTException {
         System.setProperty("webdriver.chrome.driver", "C:/Users/Kosta/Documents/chrome_driver/chromedriver.exe");
 
-/*        //Для режима инкогнито
+/*       //Для режима инкогнито
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--incognito");
         DesiredCapabilities capabilities = DesiredCapabilities.chrome();
@@ -53,7 +56,7 @@ public class FirstTest {
 
         //Проверка Автоподгрузки (Проверка в ручном режиме, продолжение в конце)
         Actions actions = new Actions(driver);
-        try {driver.get(Prod.NEWS);}
+        try {driver.get(Prod.NEWS + "inttotestv8A");}
         catch (TimeoutException ingore)
         {actions.sendKeys(Keys.ESCAPE);}
 
@@ -66,19 +69,20 @@ public class FirstTest {
     }
 
     @Test
+    //TITLE
     public void test_title() {
-        //Проверка Тайтла
-        driver.get(Prod.NEWS);
+        driver.get(Staging.NEWS + "inttotestv8A");
         closeFull();
         assertEquals(driver.getTitle(), "РБК — новости, акции, курсы валют, доллар, евро");
         System.out.println(ConsoleColors.YELLOW_BOLD_BRIGHT + "Проверка TITLE успешно завершена" + ConsoleColors.RESET);
     }
 
     @Test
+    //ПОИСК
     public void test_search() {
-        //Проверка поиска
-        driver.findElement(By.cssSelector("div.topline__search__menu.js-search-open")).click();
+        driver.get(SPLIT(Staging.NEWS, "8A"));
         closeFull();
+        driver.findElement(By.cssSelector("div.topline__search__menu.js-search-open")).click();
         String t = "Путин";
         driver.findElement(By.cssSelector("input.topline__search__input")).sendKeys(t);
         driver.findElement(By.cssSelector("input.topline__search__button")).click();
@@ -96,23 +100,22 @@ public class FirstTest {
     }
 
     @Test
-    public void test_lenta1() {
-        //Лента новостей. Часть 1
-        //String lnk = Prod.NEWS;
-        try {
-            driver.get(Prod.NEWS);
-        } catch (TimeoutException ignore) {
-        }
+    //ЛЕНТА НОВОСТЕЙ
+    public void test_lenta() {
+
+        //Лента новостей. Часть 1 (Сравнить содержание ленты новостей с продом)
+        try {driver.get(SPLIT(Prod.NEWS, "8A"));}
+        catch (TimeoutException ignore) {}
         closeFull();
         String lenta_text = driver.findElement(By.cssSelector(".news-feed__item:nth-child(2)")).getAttribute("href");
-        driver.get(Staging.NEWS);
+        driver.get(SPLIT(Prod.NEWS, "8A"));
         closeFull();
         String lenta_text1 = driver.findElement(By.cssSelector(".news-feed__item:nth-child(2)")).getAttribute("href");
-        assertEquals(modifyUrl(lenta_text), modifyUrl(lenta_text1));
+        assertEquals(cleanUrl(lenta_text), cleanUrl(lenta_text1));
         System.out.println(ConsoleColors.YELLOW_BOLD_BRIGHT + "Проверка ЛЕНТЫ НОВОСТЕЙ (Часть 1) успешно завершена" + ConsoleColors.RESET);
 
-        //Лента новостей. Часть 2
-        driver.get(Staging.NEWS);
+        //Лента новостей. Часть 2 (Клик на любой материал из ленты новостей)
+        driver.get(SPLIT(Staging.NEWS, "8A"));
         closeFull();
         String lenta_url = driver.findElement(By.cssSelector(".news-feed__item:nth-child(2)")).getAttribute("href"); // доработать
         driver.get(lenta_url); //?
@@ -125,13 +128,15 @@ public class FirstTest {
 
 
     @Test
-    public void test_shapka() throws Exception {
+    //ГЛАВНАЯ. ТОПЛАЙН.
+    public void test_topline() throws Exception {
         Actions actions = new Actions(driver);
-        try {driver.get(Prod.NEWS);}
+        try {driver.get(SPLIT(Prod.NEWS, "8A"));}
         catch (TimeoutException ingore)
         {actions.sendKeys(Keys.ESCAPE);}
         //Проверка эмблемы из топлайна
         actions.keyDown(Keys.LEFT_CONTROL).click(driver.findElement(By.cssSelector(".topline__item_logo"))).keyUp(Keys.LEFT_CONTROL).build().perform();
+
         ArrayList<String> tabs = new ArrayList<>(driver.getWindowHandles()); // Получение списка вкладок
         driver.switchTo().window(tabs.get(2));// Переключение на третью вкладку
         assertEquals(driver.getCurrentUrl(), Prod.NEWS);
@@ -178,14 +183,13 @@ public class FirstTest {
             driver.switchTo().window(tabs.get(2));// Переключение на третью вкладку
             try {assertEquals(driver.getCurrentUrl(), mass[j]+"?utm_source=topline");}
             catch (ComparisonFailure c)
-            {System.err.println(c);}
+            {System.out.println(c);}
             TabActions.Close();
             driver.switchTo().window(tabs.get(1));// Перключение на вторую вкладку
             tabs.remove(2);
             j++;
         }
-
-
+        System.out.println(ConsoleColors.YELLOW_BOLD_BRIGHT + "Проверка ТОПЛАЙНА успешно завершена" + ConsoleColors.RESET);
         //Actions close = new Actions(driver);
         //close.keyDown(Keys.LEFT_CONTROL).pause(1).sendKeys(Keys.F4).keyUp(Keys.LEFT_CONTROL).build().perform();
         //driver.switchTo().window(tabs2.get(1));// Переключение на вторую вкладку
@@ -213,8 +217,54 @@ public class FirstTest {
         driver.findElement(By.xpath("(.//*[normalize-space(text()) and normalize-space(.)='Лента новостей'])[1]/following::span[1]")).click();
         String real_title = driver.getTitle();
         */
+    @Test
+    public void test_online() throws Exception {
+        Actions actions = new Actions(driver);
+        try {driver.get(SPLIT(Prod.NEWS, "8A"));}
+        catch (TimeoutException ingore)
+        {actions.sendKeys(Keys.ESCAPE);}
 
+        /**TOPLINE размер плеера*/
+        driver.findElement(By.cssSelector(".topline__video-block")).click(); sleep(1000); //запуск прямого эфира из топлайна
+                                            driver.findElement(By.cssSelector(".vjs-play-control")).click(); sleep(1000); //пауза
+        driver.findElement(By.cssSelector(".topline__video-block")).click(); sleep(1000); //Play
+        driver.findElement(By.cssSelector(".vjs-mute-control")).click(); sleep(1000); // отключение звука
+        driver.findElement(By.cssSelector(".vjs-mute-control")).click(); sleep(1000); // включение звука
 
+        /**MEDIUM размер плеера*/
+        driver.findElement(By.cssSelector(".vjs-change-view-control")).click(); sleep(1000);
+        driver.findElement(By.cssSelector(".vjs-mute-control")).click(); sleep(1000); // отключение звука
+        driver.findElement(By.cssSelector(".vjs-mute-control")).click(); sleep(1000); // включение звука
+        //Проверка ползунка громкости
+        // http://internetka.in.ua/selenium-drag-and-drop/
+        WebElement sliderTrack = driver.findElement(By.cssSelector(".vjs-volume-horizontal"));
+        WebElement slider = driver.findElement(By.cssSelector(".vjs-volume-level"));
+        assertEquals(getCurrentPosition(sliderTrack, slider), 100);
+        setSliderPosition(20, sliderTrack, slider);
+        assertEquals(getCurrentPosition(sliderTrack, slider), 20);
+
+        //Проверка смены качества
+        for (int i = 1; i<= 4; i++) {
+            driver.findElement(By.cssSelector(".js-videojs-quality-btn")).click();
+            actions.moveToElement(driver.findElement(By.cssSelector(".vjs-select-quality-item:nth-child(" + Integer.toString(i) + ")")));
+            driver.findElement(By.cssSelector(".vjs-select-quality-item:nth-child(" + Integer.toString(i) + ")")).click();
+            sleep(1000);
+        }
+
+        /**FULLSCREEN размер плеера*/
+        driver.findElement(By.cssSelector(".vjs-fullscreen-control")).click(); sleep(500);
+        //Проверка смены качества
+        for (int i = 1; i<= 4; i++) {
+            driver.findElement(By.cssSelector(".js-videojs-quality-btn")).click();
+            actions.moveToElement(driver.findElement(By.cssSelector(".vjs-select-quality-item:nth-child(" + Integer.toString(i) + ")")));
+            driver.findElement(By.cssSelector(".vjs-select-quality-item:nth-child(" + Integer.toString(i) + ")")).click();
+            sleep(1000);
+        }
+        driver.findElement(By.cssSelector(".vjs-play-control")).click(); sleep(1000);
+        driver.findElement(By.cssSelector(".vjs-big-play-button")).click();sleep(1000);
+        driver.findElement(By.cssSelector(".vjs-fullscreen-control")).click(); //Выход из фуллскрина
+
+    }
 
     @AfterClass()
     public static void tearDown() {
@@ -222,16 +272,16 @@ public class FirstTest {
         driver.quit();
     }
 
-
+/**-----------------------------------------------------------------------------------------------------------------------*/
     private void closeFull () {
         try {
             if (driver.findElement(By.cssSelector("body > div.news #closeButton_1239")).isEnabled())
-                driver.findElement(By.cssSelector("body > div.news #closeButton_1239")).click();
-        } catch (NoSuchElementException ignore) {
+                driver.findElement(By.cssSelector("body > div.news #closeButton_1239")).click();}
+        catch (NoSuchElementException ignore) {
         }
     }
 
-    private String modifyUrl (String lnk)
+    private String cleanUrl (String lnk)
     {
         if (lnk.contains("www"))
             return lnk.substring(11);
@@ -253,6 +303,24 @@ public class FirstTest {
         }
         else
             return lnk.substring(7);
+    }
+
+    private long getValue(WebElement sliderTrack) {
+        return sliderTrack.getSize().width / 100;
+    }
+    private long getCurrentPosition(WebElement sliderTrack, WebElement slider) {
+        // Позицию можно получить по значению атрибута left
+        // getCssValue("left") возвращает абсолютное значение в px,
+        long sliderCenterPx = Integer.parseInt(slider.getCssValue("aria-valuenow") + slider.getSize().width / 2);
+        return sliderCenterPx / getValue(sliderTrack) + 1;
+    }
+    private void setSliderPosition(long position, WebElement sliderTrack, WebElement slider) {
+        if (position < 1 || position > 100) {
+            throw new AssertionError("Slider position value should be in the range of 1 to 100");
+        }
+        long xOffset = (position - getCurrentPosition(sliderTrack, sliderTrack)) * getValue(sliderTrack);
+        Actions actions = new Actions(driver);
+        actions.dragAndDropBy(slider, (int) xOffset, 0).perform();
     }
    /* public void CloseFullscreen()
     {

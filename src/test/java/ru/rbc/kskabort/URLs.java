@@ -8,14 +8,14 @@ package ru.rbc.kskabort;
 class URLs {
 
     class News {
-        static final String PROD = "https://www.rbc.ru/";
+        static final String PROD = "https://www.rbc.ru/inttotestv8A";
         static final String STAGE = "https://staging.rbc.ru/";
         static final String NEWS_REGULAR = "https://test.rbc.ru/";
         static final String NEWS_2 = "https://test2.rbc.ru/";
         static final String NEWS_3 = "https://test3.rbc.ru/";
     }
 
-    class Prod {
+    static class Prod {
         static final String NEWS = "https://www.rbc.ru/";
         static final String AUTO = "https://www.autonews.ru/";
         static final String TV = "http://tv.rbc.ru/";
@@ -100,6 +100,12 @@ class URLs {
                         Prod.REALTY, Prod.STYLE, Prod.SPORT, Prod.PRO, Prod.MARKETING, Other.BIZTORG, Other.FRANCHISES, Prod.BC,
                         Prod.AWARDS, Prod.AWARDS_SPB, Other.CNEWS};
         static final String[] top_add = {Other.HEALTH, Prod.PINK, Prod.AWARDS};
+    }
+
+    static String SPLIT(String url, String ver)
+    {
+        url += "inttotestv";
+        return url + ver;
     }
     /*    else if (param.equals("tolpine_add")) {
             mass = new String[] {Other.HEALTH, Prod.PINK, Prod.AWARDS};
