@@ -24,7 +24,7 @@ class URLs {
         static final String NEWSPAPER = "https://www.rbc.ru/newspaper/";
         static final String MAGAZINE = "https://www.rbc.ru/magazine/";
         static final String CRYPTO = "https://www.rbc.ru/crypto/";// !!
-        static final String SPORT = "https://sportrbc.ru/";
+        static final String SPORT = "https://sport.rbc.ru/";
         static final String REALTY = "https://realty.rbc.ru/";
         static final String QUOTE = "https://quote.rbc.ru/";
         static final String MARKETING = "https://marketing.rbc.ru/";
@@ -34,6 +34,7 @@ class URLs {
         static final String RNV = "http://cash.rbc.ru/";
         static final String RBCPLUS = "http://www.rbcplus.ru/";
         static final String PRO = "https://pro.rbc.ru/";// !!
+        static final String BC = "http://bc.rbc.ru/";// !!
         //static final String ZOOM = "http://zoom.cnews.ru/";
     }
     class Staging {
@@ -45,7 +46,7 @@ class URLs {
         static final String NEWSPAPER = "https://staging.rbc.ru/newspaper/";
         static final String MAGAZINE = "https://staging.rbc.ru/magazine/";
         static final String CRYPTO = "https://staging.rbc.ru/crypto/";// !!
-        static final String SPORT = "https://staging.v4.sportrbc.ru/";
+        static final String SPORT = "https://staging.v4.sport.rbc.ru/";
         static final String REALTY = "https://staging.realty.rbc.ru/";
         static final String QUOTE = "https://staging.v4.quote.rbc.ru/";
         static final String MARKETING = "https://staging.v4.marketing.rbc.ru/";
@@ -55,6 +56,7 @@ class URLs {
         static final String RNV = "http://staging.v5.cash.rbc.ru/";
         static final String RBCPLUS = "http://staging.v2.rbcplus.ru/";
         static final String PRO = "https://staging.pro.rbc.ru/";// !!
+        static final String BC = "http://staging.bc.rbc.ru/"; // !!
 
     }
 
@@ -70,7 +72,7 @@ class URLs {
         static final String NEWSPAPER = "https://test.rbc.ru/newspaper/";
         static final String MAGAZINE = "https://test.rbc.ru/magazine/";
         static final String CRYPTO = "https://test.rbc.ru/crypto/"; // !!
-        static final String SPORT = "https://test.sportrbc.ru/";
+        static final String SPORT = "https://test.sport.rbc.ru/";
         static final String REALTY = "https://test.v4.realty.rbc.ru/";
         static final String QUOTE = "https://test.v4.quote.rbc.ru/";
         static final String MARKETING = "https://test.v4.marketing.rbc.ru/";
@@ -79,22 +81,29 @@ class URLs {
         static final String AWARDS_SPB = "https://test.rbc.ru/awards_spb/";
         static final String RNV = "http://test.v5.cash.rbc.ru/";
         static final String RBCPLUS = "http://test.v2.rbcplus.ru/";
-        static final String PRO = "https://staging.pro.rbc.ru/";// !!
+        static final String PRO = "https://test.pro.rbc.ru/";// !!
+        static final String BC = "http://test.bc.rbc.ru/"; // !!
     }
 
     class Other{
         static final String BIZTORG = "http://biztorg.ru/offers/";
         static final String FRANCHISES = "http://biztorg.ru/franchises/";
         static final String CNEWS = "http://www.cnews.ru/";
+        static final String HEALTH = "http://health.rbc.ru/";
      }
 
-    static String[] i_need_mass (String param){
+/*    static String[] i_need_mass (String param){
         String[] mass = new String[0];
-        if (param.equals("topline")) {
-                mass = new String[]{Prod.TV, Prod.NEWSPAPER, Prod.MAGAZINE, Prod.RBCPLUS, Prod.QUOTE, Prod.CRYPTO, Prod.AUTO,
-                        Prod.REALTY, Prod.STYLE, Prod.PRO, Prod.PINK, Prod.MARKETING, Other.BIZTORG, Other.FRANCHISES,
+        if (param.equals("topline")) {*/
+    static class Mass{
+        static final String[] topline = {Prod.TV, Prod.NEWSPAPER, Prod.MAGAZINE, Prod.RBCPLUS, Prod.QUOTE, Prod.CRYPTO, Prod.AUTO,
+                        Prod.REALTY, Prod.STYLE, Prod.SPORT, Prod.PRO, Prod.MARKETING, Other.BIZTORG, Other.FRANCHISES, Prod.BC,
                         Prod.AWARDS, Prod.AWARDS_SPB, Other.CNEWS};
-            }
-        return mass;
+        static final String[] top_add = {Other.HEALTH, Prod.PINK, Prod.AWARDS};
     }
+    /*    else if (param.equals("tolpine_add")) {
+            mass = new String[] {Other.HEALTH, Prod.PINK, Prod.AWARDS};
+        }
+        return mass;
+    }*/
 }

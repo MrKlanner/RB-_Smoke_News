@@ -10,6 +10,7 @@ package ru.rbc.kskabort;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ComparisonFailure;
 import org.junit.Test;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -51,9 +52,10 @@ public class FirstTest {
         System.out.println(ConsoleColors.RED_BOLD_BRIGHT + "-----------------------------------------------------------" + ConsoleColors.RESET);
 
         //Проверка Автоподгрузки (Проверка в ручном режиме, продолжение в конце)
+        Actions actions = new Actions(driver);
         try {driver.get(Prod.NEWS);}
-        catch (TimeoutException ignore)
-        {}
+        catch (TimeoutException ingore)
+        {actions.sendKeys(Keys.ESCAPE);}
 
         //Закрываем поп ап с предложением подписки
         driver.findElement(By.cssSelector(".push-allow__item:nth-child(2)")).click();
@@ -123,35 +125,64 @@ public class FirstTest {
 
 
     @Test
-    public void test_shapka() throws InterruptedException, AWTException {
-        driver.get(Prod.NEWS);
+    public void test_shapka() throws Exception {
         Actions actions = new Actions(driver);
+        try {driver.get(Prod.NEWS);}
+        catch (TimeoutException ingore)
+        {actions.sendKeys(Keys.ESCAPE);}
         //Проверка эмблемы из топлайна
         actions.keyDown(Keys.LEFT_CONTROL).click(driver.findElement(By.cssSelector(".topline__item_logo"))).keyUp(Keys.LEFT_CONTROL).build().perform();
-        ArrayList<String> tabs2 = new ArrayList<>(driver.getWindowHandles()); // Получение списка вкладок
-        driver.switchTo().window(tabs2.get(2));// Переключение на третью вкладку
+        ArrayList<String> tabs = new ArrayList<>(driver.getWindowHandles()); // Получение списка вкладок
+        driver.switchTo().window(tabs.get(2));// Переключение на третью вкладку
         assertEquals(driver.getCurrentUrl(), Prod.NEWS);
         TabActions.Close();
-        driver.switchTo().window(tabs2.get(1));// Переключение на вторую вкладку
-        tabs2.remove(2);
+        driver.switchTo().window(tabs.get(1));// Переключение на вторую вкладку
+        tabs.remove(2);
 
-        String[] mass = URLs.i_need_mass("topline");
+        String[] mass = URLs.Mass.topline;
+        String[] mass_add = URLs.Mass.top_add;
+        int len_add = (mass_add).length;
+        int j = 0;
 
         for (int i = 4; i<=21; i++)
         {
             if (i <= 6)
                 actions.keyDown(Keys.LEFT_CONTROL).click(driver.findElement(By.cssSelector(".topline__item_important:nth-child(" + Integer.toString(i) + ")"))).keyUp(Keys.LEFT_CONTROL).build().perform();
             else {
-                if (driver.findElement(By.cssSelector(".topline__item:nth-child(" + Integer.toString(i) + ")")).getAttribute("href").contains(mass[i-4]))
-                {continue;}
-                actions.keyDown(Keys.LEFT_CONTROL).click(driver.findElement(By.cssSelector(".topline__item:nth-child(" + Integer.toString(i) + ")"))).keyUp(Keys.LEFT_CONTROL).build().perform();
+                if (!driver.findElement(By.cssSelector(".topline__item:nth-child(" + Integer.toString(i) + ")")).getAttribute("href").contains(mass[j])) // проверка: содержится ли в проверяемой строке текущая
+                { //Если нет, то проверяется наличие рекламных ссылок:
+                    for (int l = 0; l <len_add; l++)
+                    {
+                        if (driver.findElement(By.cssSelector(".topline__item:nth-child(" + Integer.toString(i) + ")")).getAttribute("href").contains(mass_add[l])) // Если рекламная ссылка найдена, то продолжаем с новым индексом на ФО. Если нет, то бъем тревогу
+                            i++;
+                        else {
+                            tabs = new ArrayList<>(driver.getWindowHandles());
+                            if (tabs.size() >= 3) {
+                                for (int tb_i = tabs.size() - 1; tb_i >= 2; tb_i--)// Проверка количества вкладок
+                                {
+                                    driver.switchTo().window(tabs.get(tb_i));// Перключение на последнюю вкладку
+                                    TabActions.Close();
+                                    driver.switchTo().window(tabs.get(tb_i - 1));// Перключение на вторую вкладку
+                                    tabs.remove(tb_i);
+                                }
+                                actions.keyDown(Keys.LEFT_CONTROL).click(driver.findElement(By.cssSelector(".topline__item:nth-child(" + Integer.toString(i) + ")"))).keyUp(Keys.LEFT_CONTROL).build().perform();
+                                break;
+                            }
+                            else throw new Exception("URL is not from Project or ADD's URL!");}
+                    }
+                }
+                else
+                    actions.keyDown(Keys.LEFT_CONTROL).click(driver.findElement(By.cssSelector(".topline__item:nth-child(" + Integer.toString(i) + ")"))).keyUp(Keys.LEFT_CONTROL).build().perform();
             }
-            ArrayList<String> tabs = new ArrayList<>(driver.getWindowHandles());
+            tabs = new ArrayList<>(driver.getWindowHandles());
             driver.switchTo().window(tabs.get(2));// Переключение на третью вкладку
-            assertEquals(driver.getCurrentUrl(), mass[i-4]+"?utm_source=topline");
+            try {assertEquals(driver.getCurrentUrl(), mass[j]+"?utm_source=topline");}
+            catch (ComparisonFailure c)
+            {System.err.println(c);}
             TabActions.Close();
             driver.switchTo().window(tabs.get(1));// Перключение на вторую вкладку
             tabs.remove(2);
+            j++;
         }
 
 
