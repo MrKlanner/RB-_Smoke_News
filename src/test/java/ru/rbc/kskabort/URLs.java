@@ -29,6 +29,8 @@ class URLs {
         static final String QUOTE = "https://quote.rbc.ru/";
         static final String MARKETING = "https://marketing.rbc.ru/";
         static final String RBC500 = "https://rbc.ru/rbc500//";
+        static final String AWARDS = "https://www.rbc.ru/awards/";
+        static final String AWARDS_SPB = "https://www.rbc.ru/awards_spb/";
         static final String RNV = "http://cash.rbc.ru/";
         static final String RBCPLUS = "http://www.rbcplus.ru/";
         static final String PRO = "https://pro.rbc.ru/";// !!
@@ -48,6 +50,8 @@ class URLs {
         static final String QUOTE = "https://staging.v4.quote.rbc.ru/";
         static final String MARKETING = "https://staging.v4.marketing.rbc.ru/";
         static final String RBC500 = "https://staging.rbc.ru/rbc500//";
+        static final String AWARDS = "https://staging.rbc.ru/awards/";
+        static final String AWARDS_SPB = "https://staging.rbc.ru/awards_spb/";
         static final String RNV = "http://staging.v5.cash.rbc.ru/";
         static final String RBCPLUS = "http://staging.v2.rbcplus.ru/";
         static final String PRO = "https://staging.pro.rbc.ru/";// !!
@@ -71,24 +75,26 @@ class URLs {
         static final String QUOTE = "https://test.v4.quote.rbc.ru/";
         static final String MARKETING = "https://test.v4.marketing.rbc.ru/";
         static final String RBC500 = "https://test.rbc.ru/rbc500//";
+        static final String AWARDS = "https://test.rbc.ru/awards/";
+        static final String AWARDS_SPB = "https://test.rbc.ru/awards_spb/";
         static final String RNV = "http://test.v5.cash.rbc.ru/";
         static final String RBCPLUS = "http://test.v2.rbcplus.ru/";
         static final String PRO = "https://staging.pro.rbc.ru/";// !!
     }
 
-   /* class Other{
+    class Other{
         static final String BIZTORG = "http://biztorg.ru/offers/";
-        static final String  = "http://biztorg.ru/franchises/";
+        static final String FRANCHISES = "http://biztorg.ru/franchises/";
+        static final String CNEWS = "http://www.cnews.ru/";
+     }
 
-    }
-
-    String[] i_need_mass (String param){
-        String mass = {Prod.TV, Prod.NEWSPAPER, Prod.MAGAZINE, Prod.RBCPLUS, Prod.QUOTE, Prod.CRYPTO, Prod.AUTO, Prod.REALTY, Prod.STYLE, Prod.PRO, Prod.PINK, Prod.MARKETING,
-        if (param == "topline")
-            for (int i = 0; i< 22; i++)
-            {
-
+    static String[] i_need_mass (String param){
+        String[] mass = new String[0];
+        if (param.equals("topline")) {
+                mass = new String[]{Prod.TV, Prod.NEWSPAPER, Prod.MAGAZINE, Prod.RBCPLUS, Prod.QUOTE, Prod.CRYPTO, Prod.AUTO,
+                        Prod.REALTY, Prod.STYLE, Prod.PRO, Prod.PINK, Prod.MARKETING, Other.BIZTORG, Other.FRANCHISES,
+                        Prod.AWARDS, Prod.AWARDS_SPB, Other.CNEWS};
             }
-
-    }*/
+        return mass;
+    }
 }

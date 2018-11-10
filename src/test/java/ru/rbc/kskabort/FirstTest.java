@@ -9,18 +9,15 @@
 package ru.rbc.kskabort;
 
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.interactions.Actions;
-import org.openqa.selenium.remote.DesiredCapabilities;
-import ru.rbc.kskabort.URLs.*;
+import ru.rbc.kskabort.URLs.Prod;
+import ru.rbc.kskabort.URLs.Staging;
 
 import java.awt.*;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
@@ -34,16 +31,16 @@ public class FirstTest {
 
     @BeforeClass
     public static void setup() throws InterruptedException, AWTException {
-        System.setProperty("webdriver.chrome.driver", "C:/Users/kskabort/Documents/chrome_driver/chromedriver.exe");
+        System.setProperty("webdriver.chrome.driver", "C:/Users/Kosta/Documents/chrome_driver/chromedriver.exe");
 
-        //Для режима инкогнито
+/*        //Для режима инкогнито
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--incognito");
         DesiredCapabilities capabilities = DesiredCapabilities.chrome();
-        capabilities.setCapability(ChromeOptions.CAPABILITY, options);
-        driver = new ChromeDriver(capabilities); //новое окно инкогнито
+        capabilities.setCapability(ChromeOptions.CAPABILITY, options);*/
+        driver = new ChromeDriver(); //новое окно инкогнито
         //driver = new ChromeDriver();
-        driver.manage().deleteAllCookies(); //чистим куки
+        //driver.manage().deleteAllCookies(); //чистим куки
         //driver.manage().window().maximize();
 
         // устанавливаем таймаут ожидания загрузки
@@ -54,7 +51,7 @@ public class FirstTest {
         System.out.println(ConsoleColors.RED_BOLD_BRIGHT + "-----------------------------------------------------------" + ConsoleColors.RESET);
 
         //Проверка Автоподгрузки (Проверка в ручном режиме, продолжение в конце)
-        try {driver.get(Staging.NEWS);}
+        try {driver.get(Prod.NEWS);}
         catch (TimeoutException ignore)
         {}
 
@@ -66,13 +63,10 @@ public class FirstTest {
         driver.switchTo().window(tabs2.get(1));// Переключение на вторую вкладку
     }
 
-    @Before
-
-
     @Test
     public void test_title() {
         //Проверка Тайтла
-        driver.get("https://staging.rbc.ru");
+        driver.get(Prod.NEWS);
         closeFull();
         assertEquals(driver.getTitle(), "РБК — новости, акции, курсы валют, доллар, евро");
         System.out.println(ConsoleColors.YELLOW_BOLD_BRIGHT + "Проверка TITLE успешно завершена" + ConsoleColors.RESET);
@@ -130,25 +124,28 @@ public class FirstTest {
 
     @Test
     public void test_shapka() throws InterruptedException, AWTException {
-        driver.get(Staging.NEWS);
+        driver.get(Prod.NEWS);
         Actions actions = new Actions(driver);
         //Проверка эмблемы из топлайна
         actions.keyDown(Keys.LEFT_CONTROL).click(driver.findElement(By.cssSelector(".topline__item_logo"))).keyUp(Keys.LEFT_CONTROL).build().perform();
         ArrayList<String> tabs2 = new ArrayList<>(driver.getWindowHandles()); // Получение списка вкладок
         driver.switchTo().window(tabs2.get(2));// Переключение на третью вкладку
-        assertEquals(driver.getCurrentUrl(), Staging.NEWS);
+        assertEquals(driver.getCurrentUrl(), Prod.NEWS);
         TabActions.Close();
         driver.switchTo().window(tabs2.get(1));// Переключение на вторую вкладку
         tabs2.remove(2);
 
-        String[] mass = new String[]{Prod.TV, Prod.NEWSPAPER, Prod.MAGAZINE, Prod.RBCPLUS, Prod.QUOTE, Prod.CRYPTO, Prod.AUTO, Prod.REALTY, Prod.STYLE, Prod.PRO, Prod.PINK, Prod.MARKETING};// ДОПИСАТЬ!!!
+        String[] mass = URLs.i_need_mass("topline");
 
         for (int i = 4; i<=21; i++)
         {
             if (i <= 6)
                 actions.keyDown(Keys.LEFT_CONTROL).click(driver.findElement(By.cssSelector(".topline__item_important:nth-child(" + Integer.toString(i) + ")"))).keyUp(Keys.LEFT_CONTROL).build().perform();
-            else
+            else {
+                if (driver.findElement(By.cssSelector(".topline__item:nth-child(" + Integer.toString(i) + ")")).getAttribute("href").contains(mass[i-4]))
+                {continue;}
                 actions.keyDown(Keys.LEFT_CONTROL).click(driver.findElement(By.cssSelector(".topline__item:nth-child(" + Integer.toString(i) + ")"))).keyUp(Keys.LEFT_CONTROL).build().perform();
+            }
             ArrayList<String> tabs = new ArrayList<>(driver.getWindowHandles());
             driver.switchTo().window(tabs.get(2));// Переключение на третью вкладку
             assertEquals(driver.getCurrentUrl(), mass[i-4]+"?utm_source=topline");
