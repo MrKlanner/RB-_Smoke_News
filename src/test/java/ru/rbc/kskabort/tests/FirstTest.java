@@ -6,7 +6,7 @@
  * 3) Выполнять проверку загрузки каждый раз и приостанавливать загрузку если больше какого-то определенного промежутка времени
  * */
 
-package ru.rbc.kskabort;
+package ru.rbc.kskabort.tests;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -15,8 +15,11 @@ import org.junit.Test;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.interactions.Actions;
-import ru.rbc.kskabort.URLs.Prod;
-import ru.rbc.kskabort.URLs.Staging;
+import ru.rbc.kskabort.pages.FirstPage;
+import ru.rbc.kskabort.pages.SecondPage;
+import ru.rbc.kskabort.pages.StaticPageObjects;
+import ru.rbc.kskabort.tests.URLs.Prod;
+import ru.rbc.kskabort.tests.URLs.Staging;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -24,7 +27,7 @@ import java.util.concurrent.TimeUnit;
 
 import static java.lang.Thread.sleep;
 import static org.junit.Assert.assertEquals;
-import static ru.rbc.kskabort.URLs.SPLIT;
+import static ru.rbc.kskabort.tests.URLs.SPLIT;
 
 
 
@@ -32,6 +35,9 @@ public class FirstTest {
 
     private static WebDriver driver;
     //private StringBuffer verificationErrors = new StringBuffer();
+    public static FirstPage firstPage;
+    public static SecondPage secondPage;
+    public static StaticPageObjects staticPageObjects;
 
     @BeforeClass
     public static void setup() throws InterruptedException, AWTException {
@@ -46,6 +52,10 @@ public class FirstTest {
         //driver = new ChromeDriver();
         //driver.manage().deleteAllCookies(); //чистим куки
         //driver.manage().window().maximize();
+        firstPage = new FirstPage(driver);
+        secondPage = new SecondPage(driver);
+        staticPageObjects = new StaticPageObjects(driver);
+
 
         // устанавливаем таймаут ожидания загрузки
         driver.manage().timeouts().pageLoadTimeout(10, TimeUnit.SECONDS);
@@ -61,7 +71,7 @@ public class FirstTest {
         {actions.sendKeys(Keys.ESCAPE);}
 
         //Закрываем поп ап с предложением подписки
-        driver.findElement(By.cssSelector(".push-allow__item:nth-child(2)")).click();
+        firstPage.closeSub();
 
         TabActions.New();
         ArrayList<String> tabs2 = new ArrayList<>(driver.getWindowHandles()); // Получение списка вкладок
@@ -71,10 +81,10 @@ public class FirstTest {
     @Test
     //TITLE
     public void test_title() {
-        driver.get(Staging.NEWS + "inttotestv8A");
+        driver.get(SPLIT(Staging.NEWS, "8A"));
         closeFull();
         assertEquals(driver.getTitle(), "РБК — новости, акции, курсы валют, доллар, евро");
-        System.out.println(ConsoleColors.YELLOW_BOLD_BRIGHT + "Проверка TITLE успешно завершена" + ConsoleColors.RESET);
+        System.out.println(ConsoleColors.GREEN_BOLD_BRIGHT + "Проверка TITLE успешно завершена" + ConsoleColors.RESET);
     }
 
     @Test
@@ -82,15 +92,13 @@ public class FirstTest {
     public void test_search() {
         driver.get(SPLIT(Staging.NEWS, "8A"));
         closeFull();
-        driver.findElement(By.cssSelector("div.topline__search__menu.js-search-open")).click();
         String t = "Путин";
-        driver.findElement(By.cssSelector("input.topline__search__input")).sendKeys(t);
-        driver.findElement(By.cssSelector("input.topline__search__button")).click();
+        staticPageObjects.searchQuery(t);
         closeFull();
         assertEquals(driver.getTitle(), "РБК — новости, акции, курсы валют, доллар, евро"); // проверка error 404
         String p;
         for (int i = 1; i <= 5; i++) {
-            p = driver.findElement(By.cssSelector("div.search-item:nth-child(" + Integer.toString(i) + ") span.search-item__text")).getText();
+            p = secondPage.serchQuerys(i);
             if (!p.contains(t)) {
                 System.out.println(ConsoleColors.RED_BOLD_BRIGHT + "Проверка поиска провалена" + ConsoleColors.RESET);
                 break;
@@ -103,26 +111,25 @@ public class FirstTest {
     //ЛЕНТА НОВОСТЕЙ
     public void test_lenta() {
 
-        //Лента новостей. Часть 1 (Сравнить содержание ленты новостей с продом)
+        int n = 2;
+        //Лента новостей. Часть 1 (Сравнить url ленты новостей с продом)
         try {driver.get(SPLIT(Prod.NEWS, "8A"));}
         catch (TimeoutException ignore) {}
         closeFull();
-        String lenta_text = driver.findElement(By.cssSelector(".news-feed__item:nth-child(2)")).getAttribute("href");
+        String lenta_text = staticPageObjects.getLentaUrl(n);
         driver.get(SPLIT(Prod.NEWS, "8A"));
         closeFull();
-        String lenta_text1 = driver.findElement(By.cssSelector(".news-feed__item:nth-child(2)")).getAttribute("href");
+        String lenta_text1 = staticPageObjects.getLentaUrl(n);
         assertEquals(cleanUrl(lenta_text), cleanUrl(lenta_text1));
         System.out.println(ConsoleColors.YELLOW_BOLD_BRIGHT + "Проверка ЛЕНТЫ НОВОСТЕЙ (Часть 1) успешно завершена" + ConsoleColors.RESET);
 
-        //Лента новостей. Часть 2 (Клик на любой материал из ленты новостей)
+        //Лента новостей. Часть 2 (Проверка редиректа)
         driver.get(SPLIT(Staging.NEWS, "8A"));
         closeFull();
-        String lenta_url = driver.findElement(By.cssSelector(".news-feed__item:nth-child(2)")).getAttribute("href"); // доработать
-        driver.get(lenta_url); //?
+        String lenta_url = staticPageObjects.getLentaUrl(n); // доработать
+        staticPageObjects.clickLenta(n);
         closeFull();
-        int k = Staging.NEWS.length();
-        lenta_url = lenta_url.substring(k + 1, lenta_url.length() - "?from=newsfeed".length());
-        if (driver.getCurrentUrl().contains(lenta_url))
+        if (driver.getCurrentUrl().contains(cleanUrl(lenta_url)))
             System.out.println(ConsoleColors.YELLOW_BOLD_BRIGHT + "Проверка ЛЕНТЫ НОВОСТЕЙ (Часть 2) успешно завершена" + ConsoleColors.RESET);
     }
 
@@ -135,7 +142,7 @@ public class FirstTest {
         catch (TimeoutException ingore)
         {actions.sendKeys(Keys.ESCAPE);}
         //Проверка эмблемы из топлайна
-        actions.keyDown(Keys.LEFT_CONTROL).click(driver.findElement(By.cssSelector(".topline__item_logo"))).keyUp(Keys.LEFT_CONTROL).build().perform();
+        actions.keyDown(Keys.LEFT_CONTROL).click(staticPageObjects.toplineLogo).keyUp(Keys.LEFT_CONTROL).build().perform();
 
         ArrayList<String> tabs = new ArrayList<>(driver.getWindowHandles()); // Получение списка вкладок
         driver.switchTo().window(tabs.get(2));// Переключение на третью вкладку
@@ -144,12 +151,100 @@ public class FirstTest {
         driver.switchTo().window(tabs.get(1));// Переключение на вторую вкладку
         tabs.remove(2);
 
-        String[] mass = URLs.Mass.topline;
-        String[] mass_add = URLs.Mass.top_add;
+        String[] mass = URLs.Mass.topline; // Получение всех возможных ссылок на проекты в топлайне
+        String[] mass_add = URLs.Mass.top_add; // Получение всех возможных рекламных ссылок в топлайне
         int len_add = (mass_add).length;
         int j = 0;
 
-        for (int i = 4; i<=21; i++)
+        final int MAX_INDEX_TOP = 18;
+        final int MAX_INDEX_TOP_ADD = 2;
+        int max_index_c = 0;
+        int max_index_add = 0;
+
+        //Проверка количества ссылок на проекты в топлайне
+        for (int i = 0; i < MAX_INDEX_TOP; ++i) {
+            if (staticPageObjects.getTopItem(i, "common", MAX_INDEX_TOP, MAX_INDEX_TOP_ADD).isEnabled())
+                max_index_c++;
+            else {
+                max_index_c = i - 1;
+                throw new Error("Количество ссылок в топлайне = " + Integer.toString(max_index_c));
+            }
+        }
+        //Проверка количества рекламных ссылок в топлайне
+        for (int i = 0; i < MAX_INDEX_TOP_ADD; ++i) {
+            if (staticPageObjects.getTopItem(i, "add", MAX_INDEX_TOP, MAX_INDEX_TOP_ADD).isEnabled())
+                max_index_add++;
+            else {
+                max_index_add = i - 1;
+                throw new Error("Количество рекламных ссылок = " + Integer.toString(max_index_add));
+            }
+        }
+
+        //Проверка ссылок на проекты в топлайне
+        for (int i = 0; i < MAX_INDEX_TOP; i++) {
+            actions.keyDown(Keys.LEFT_CONTROL).click(staticPageObjects.getTopItem(i, "common", MAX_INDEX_TOP, MAX_INDEX_TOP_ADD)).keyUp(Keys.LEFT_CONTROL).build().perform();
+
+            tabs = new ArrayList<>(driver.getWindowHandles());
+            driver.switchTo().window(tabs.get(2));// Переключение на третью вкладку
+            try {
+                assertEquals(mass[i] + "?utm_source=topline", driver.getCurrentUrl());
+            } catch (ComparisonFailure c) {
+                //if (!driver.getCurrentUrl().contains(cleanUrlSimple(mass[i])))
+                    System.out.println(c);
+            }
+            TabActions.Close();
+            driver.switchTo().window(tabs.get(1));// Перключение на вторую вкладку
+            tabs.remove(2);
+            tabs = new ArrayList<>(driver.getWindowHandles());
+            if (tabs.size() >= 3) {
+                for (int tb_i = tabs.size() - 1; tb_i >= 2; tb_i--)// Проверка количества вкладок
+                {
+                    driver.switchTo().window(tabs.get(tb_i));// Перключение на последнюю вкладку
+                    TabActions.Close();
+                    driver.switchTo().window(tabs.get(tb_i - 1));// Перключение на вторую вкладку
+                    tabs.remove(tb_i);
+                }
+            }
+        }
+
+        //Проверка рекламных ссылок в топлайне
+        System.out.println();
+        for (int i = 0; i < MAX_INDEX_TOP_ADD; i++) {
+            actions.keyDown(Keys.LEFT_CONTROL).click(staticPageObjects.getTopItem(i, "add", MAX_INDEX_TOP, MAX_INDEX_TOP_ADD)).keyUp(Keys.LEFT_CONTROL).build().perform();
+
+            tabs = new ArrayList<>(driver.getWindowHandles());
+            driver.switchTo().window(tabs.get(2));// Переключение на третью вкладку
+
+            int k;
+            for (k = 0; k < len_add; k++){
+                if (driver.getCurrentUrl().contains(mass_add[k])) {
+                    try {
+                        assertEquals(mass_add[k], driver.getCurrentUrl());
+                    } catch (ComparisonFailure c) {
+                        //if (!driver.getCurrentUrl().contains(cleanUrlSimple(mass[i])))
+                        System.out.println(c);
+                    }
+                    break;
+                }
+            }
+            TabActions.Close();
+            driver.switchTo().window(tabs.get(1));// Перключение на вторую вкладку
+            tabs.remove(2);
+            tabs = new ArrayList<>(driver.getWindowHandles());
+            if (tabs.size() >= 3) {
+                for (int tb_i = tabs.size() - 1; tb_i >= 2; tb_i--)// Проверка количества вкладок
+                {
+                    driver.switchTo().window(tabs.get(tb_i));// Перключение на последнюю вкладку
+                    TabActions.Close();
+                    driver.switchTo().window(tabs.get(tb_i - 1));// Перключение на вторую вкладку
+                    tabs.remove(tb_i);
+                }
+            }
+        }
+        System.out.println(ConsoleColors.YELLOW_BOLD_BRIGHT + "Проверка ТОПЛАЙНА успешно завершена" + ConsoleColors.RESET);
+    }
+
+       /** for (int i = 4; i<=21; i++)
         {
             if (i <= 6)
                 actions.keyDown(Keys.LEFT_CONTROL).click(driver.findElement(By.cssSelector(".topline__item_important:nth-child(" + Integer.toString(i) + ")"))).keyUp(Keys.LEFT_CONTROL).build().perform();
@@ -190,33 +285,8 @@ public class FirstTest {
             j++;
         }
         System.out.println(ConsoleColors.YELLOW_BOLD_BRIGHT + "Проверка ТОПЛАЙНА успешно завершена" + ConsoleColors.RESET);
-        //Actions close = new Actions(driver);
-        //close.keyDown(Keys.LEFT_CONTROL).pause(1).sendKeys(Keys.F4).keyUp(Keys.LEFT_CONTROL).build().perform();
-        //driver.switchTo().window(tabs2.get(1));// Переключение на вторую вкладку
-
-        //actions.keyDown(Keys.LEFT_CONTROL).click(driver.findElement(By.cssSelector(".topline__item_important:nth-child(4)"))).keyUp(Keys.LEFT_CONTROL).build().perform();
-        //assertEquals(driver.getCurrentUrl(), Prod.TV);
-
-    }
-        /*//Переключение вкладок
-        TabActions.New();
-        ArrayList<String> tabs2 = new ArrayList<String> (driver.getWindowHandles()); // Получение списка вкладок
-        driver.switchTo().window(tabs2.get(1)); // Переклюение на вторую вкладку
-        //driver.switchTo().window(tabs2.get(0)); // Переключение на первую вкладку*/
-
-
-        //String selectLinkOpeninNewTab = Keys.chord(Keys.CONTROL,"t");
-        //driver.findElement(By.cssSelector("body")).sendKeys(selectLinkOpeninNewTab);
-
-        //driver.findElement(By.cssSelector("body")).sendKeys(Keys.chord(Keys.CONTROL, Keys.getKeyFromUnicode('\u0061')));
-        //driver.findElement(By.cssSelector("body")).sendKeys(Keys.CONTROL + "t"); //новая вкладка
-
-        /* Проверка тайтла статьи из ленты
-        String test = driver.findElement(By.cssSelector(".news-feed__item:nth-child(2) .news-feed__item__title")).getText();
-        String for_ver_title = driver.findElement(By.xpath("(.//*[normalize-space(text()) and normalize-space(.)='Лента новостей'])[1]/following::span[1]")).getText();
-        driver.findElement(By.xpath("(.//*[normalize-space(text()) and normalize-space(.)='Лента новостей'])[1]/following::span[1]")).click();
-        String real_title = driver.getTitle();
         */
+
     @Test
     public void test_online() throws Exception {
         Actions actions = new Actions(driver);
@@ -303,6 +373,15 @@ public class FirstTest {
         }
         else
             return lnk.substring(7);
+    }
+    private String cleanUrlSimple(String lnk) {
+        int k = 0;
+        for (int i = 0; i < lnk.length(); i++) {
+            if (lnk.toCharArray()[i] == '/' && k < 3)
+                k++;
+            else {k=i; break;};
+        }
+        return lnk.substring(0, k);
     }
 
     private long getValue(WebElement sliderTrack) {

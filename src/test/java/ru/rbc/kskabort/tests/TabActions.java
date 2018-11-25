@@ -1,4 +1,4 @@
-package ru.rbc.kskabort;
+package ru.rbc.kskabort.tests;
 
 /** Небольшой пример правильного использования Actions!
  * Actions actions = new Actions(driver);

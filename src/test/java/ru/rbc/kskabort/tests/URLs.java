@@ -3,7 +3,7 @@
  * 2) Создать метод для перебора ссылок на всём рбк, принимающий параметр String и отдающий массив String
  * 3) Переместить метод modify_url сюда*/
 
-package ru.rbc.kskabort;
+package ru.rbc.kskabort.tests;
 
 class URLs {
 
@@ -24,7 +24,7 @@ class URLs {
         static final String NEWSPAPER = "https://www.rbc.ru/newspaper/";
         static final String MAGAZINE = "https://www.rbc.ru/magazine/";
         static final String CRYPTO = "https://www.rbc.ru/crypto/";// !!
-        static final String SPORT = "https://sport.rbc.ru/";
+        static final String SPORT = "https://sportrbc.ru/";
         static final String REALTY = "https://realty.rbc.ru/";
         static final String QUOTE = "https://quote.rbc.ru/";
         static final String MARKETING = "https://marketing.rbc.ru/";
@@ -34,7 +34,7 @@ class URLs {
         static final String RNV = "http://cash.rbc.ru/";
         static final String RBCPLUS = "http://www.rbcplus.ru/";
         static final String PRO = "https://pro.rbc.ru/";// !!
-        static final String BC = "http://bc.rbc.ru/";// !!
+        static final String BC = "https://bc.rbc.ru/";// !!
         //static final String ZOOM = "http://zoom.cnews.ru/";
     }
     class Staging {
@@ -56,7 +56,7 @@ class URLs {
         static final String RNV = "http://staging.v5.cash.rbc.ru/";
         static final String RBCPLUS = "http://staging.v2.rbcplus.ru/";
         static final String PRO = "https://staging.pro.rbc.ru/";// !!
-        static final String BC = "http://staging.bc.rbc.ru/"; // !!
+        static final String BC = "https://staging.bc.rbc.ru/"; // !!
 
     }
 
@@ -82,7 +82,7 @@ class URLs {
         static final String RNV = "http://test.v5.cash.rbc.ru/";
         static final String RBCPLUS = "http://test.v2.rbcplus.ru/";
         static final String PRO = "https://test.pro.rbc.ru/";// !!
-        static final String BC = "http://test.bc.rbc.ru/"; // !!
+        static final String BC = "https://test.bc.rbc.ru/"; // !!
     }
 
     class Other{
@@ -99,7 +99,7 @@ class URLs {
         static final String[] topline = {Prod.TV, Prod.NEWSPAPER, Prod.MAGAZINE, Prod.RBCPLUS, Prod.QUOTE, Prod.CRYPTO, Prod.AUTO,
                         Prod.REALTY, Prod.STYLE, Prod.SPORT, Prod.PRO, Prod.MARKETING, Other.BIZTORG, Other.FRANCHISES, Prod.BC,
                         Prod.AWARDS, Prod.AWARDS_SPB, Other.CNEWS};
-        static final String[] top_add = {Other.HEALTH, Prod.PINK, Prod.AWARDS};
+        static final String[] top_add = {Other.HEALTH, Prod.PINK, Prod.AWARDS.substring(0, 24)};
     }
 
     static String SPLIT(String url, String ver)
