@@ -66,7 +66,7 @@ public class FirstTest {
 
         //Проверка Автоподгрузки (Проверка в ручном режиме, продолжение в конце)
         Actions actions = new Actions(driver);
-        try {driver.get(Prod.NEWS + "inttotestv8A");}
+        try {driver.get(SPLIT(Prod.NEWS, "10A"));}
         catch (TimeoutException ingore)
         {actions.sendKeys(Keys.ESCAPE);}
 
@@ -81,7 +81,7 @@ public class FirstTest {
     @Test
     //TITLE
     public void test_title() {
-        driver.get(SPLIT(Staging.NEWS, "8A"));
+        driver.get(SPLIT(Staging.NEWS, "10A"));
         closeFull();
         assertEquals(driver.getTitle(), "РБК — новости, акции, курсы валют, доллар, евро");
         System.out.println(ConsoleColors.GREEN_BOLD_BRIGHT + "Проверка TITLE успешно завершена" + ConsoleColors.RESET);
@@ -90,7 +90,7 @@ public class FirstTest {
     @Test
     //ПОИСК
     public void test_search() {
-        driver.get(SPLIT(Staging.NEWS, "8A"));
+        driver.get(SPLIT(Staging.NEWS, "10A"));
         closeFull();
         String t = "Путин";
         staticPageObjects.searchQuery(t);
@@ -113,18 +113,18 @@ public class FirstTest {
 
         int n = 2;
         //Лента новостей. Часть 1 (Сравнить url ленты новостей с продом)
-        try {driver.get(SPLIT(Prod.NEWS, "8A"));}
+        try {driver.get(SPLIT(Prod.NEWS, "10A"));}
         catch (TimeoutException ignore) {}
         closeFull();
         String lenta_text = staticPageObjects.getLentaUrl(n);
-        driver.get(SPLIT(Prod.NEWS, "8A"));
+        driver.get(SPLIT(Prod.NEWS, "10A"));
         closeFull();
         String lenta_text1 = staticPageObjects.getLentaUrl(n);
         assertEquals(cleanUrl(lenta_text), cleanUrl(lenta_text1));
         System.out.println(ConsoleColors.YELLOW_BOLD_BRIGHT + "Проверка ЛЕНТЫ НОВОСТЕЙ (Часть 1) успешно завершена" + ConsoleColors.RESET);
 
         //Лента новостей. Часть 2 (Проверка редиректа)
-        driver.get(SPLIT(Staging.NEWS, "8A"));
+        driver.get(SPLIT(Staging.NEWS, "10A"));
         closeFull();
         String lenta_url = staticPageObjects.getLentaUrl(n); // доработать
         staticPageObjects.clickLenta(n);
@@ -138,7 +138,7 @@ public class FirstTest {
     //ГЛАВНАЯ. ТОПЛАЙН.
     public void test_topline() throws Exception {
         Actions actions = new Actions(driver);
-        try {driver.get(SPLIT(Prod.NEWS, "8A"));}
+        try {driver.get(SPLIT(Prod.NEWS, "10A"));}
         catch (TimeoutException ingore)
         {actions.sendKeys(Keys.ESCAPE);}
         //Проверка эмблемы из топлайна
