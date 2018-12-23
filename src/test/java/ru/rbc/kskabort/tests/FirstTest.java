@@ -38,11 +38,11 @@ public class FirstTest {
     public static FirstPage firstPage;
     public static SecondPage secondPage;
     public static StaticPageObjects staticPageObjects;
+/*    private final String site = TestSite();*/
 
     @BeforeClass
     public static void setup() throws InterruptedException, AWTException {
         System.setProperty("webdriver.chrome.driver", "C:/Users/Kosta/Documents/chrome_driver/chromedriver.exe");
-
 /*       //Для режима инкогнито
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--incognito");
@@ -55,7 +55,6 @@ public class FirstTest {
         firstPage = new FirstPage(driver);
         secondPage = new SecondPage(driver);
         staticPageObjects = new StaticPageObjects(driver);
-
 
         // устанавливаем таймаут ожидания загрузки
         driver.manage().timeouts().pageLoadTimeout(10, TimeUnit.SECONDS);
@@ -81,7 +80,7 @@ public class FirstTest {
     @Test
     //TITLE
     public void test_title() {
-        driver.get(SPLIT(Staging.NEWS, "10A"));
+        driver.get(SPLIT(Prod.NEWS, "v10"));
         closeFull();
         assertEquals(driver.getTitle(), "РБК — новости, акции, курсы валют, доллар, евро");
         System.out.println(ConsoleColors.GREEN_BOLD_BRIGHT + "Проверка TITLE успешно завершена" + ConsoleColors.RESET);
@@ -115,10 +114,8 @@ public class FirstTest {
         //Лента новостей. Часть 1 (Сравнить url ленты новостей с продом)
         try {driver.get(SPLIT(Prod.NEWS, "10A"));}
         catch (TimeoutException ignore) {}
-        closeFull();
         String lenta_text = staticPageObjects.getLentaUrl(n);
-        driver.get(SPLIT(Prod.NEWS, "10A"));
-        closeFull();
+        driver.get(SPLIT(Staging.NEWS, "10A"));
         String lenta_text1 = staticPageObjects.getLentaUrl(n);
         assertEquals(cleanUrl(lenta_text), cleanUrl(lenta_text1));
         System.out.println(ConsoleColors.YELLOW_BOLD_BRIGHT + "Проверка ЛЕНТЫ НОВОСТЕЙ (Часть 1) успешно завершена" + ConsoleColors.RESET);
@@ -156,7 +153,7 @@ public class FirstTest {
         int len_add = (mass_add).length;
         int j = 0;
 
-        final int MAX_INDEX_TOP = 18;
+        final int MAX_INDEX_TOP = 17;
         final int MAX_INDEX_TOP_ADD = 2;
         int max_index_c = 0;
         int max_index_add = 0;
@@ -290,13 +287,13 @@ public class FirstTest {
     @Test
     public void test_online() throws Exception {
         Actions actions = new Actions(driver);
-        try {driver.get(SPLIT(Prod.NEWS, "8A"));}
+        try {driver.get(SPLIT(Prod.NEWS, "10A"));}
         catch (TimeoutException ingore)
         {actions.sendKeys(Keys.ESCAPE);}
 
         /**TOPLINE размер плеера*/
         driver.findElement(By.cssSelector(".topline__video-block")).click(); sleep(1000); //запуск прямого эфира из топлайна
-                                            driver.findElement(By.cssSelector(".vjs-play-control")).click(); sleep(1000); //пауза
+        driver.findElement(By.cssSelector(".vjs-play-control")).click(); sleep(1000); //пауза
         driver.findElement(By.cssSelector(".topline__video-block")).click(); sleep(1000); //Play
         driver.findElement(By.cssSelector(".vjs-mute-control")).click(); sleep(1000); // отключение звука
         driver.findElement(By.cssSelector(".vjs-mute-control")).click(); sleep(1000); // включение звука
@@ -343,6 +340,15 @@ public class FirstTest {
     }
 
 /**-----------------------------------------------------------------------------------------------------------------------*/
+/*    private String TestSite()
+    {
+        String res;
+        System.out.println("Введите тестируемую площадку.\n Если staging, то <s>, если test то <t>");
+        String p = System.console().readLine();
+        if (p.equals("s")) return SPLIT(Staging.NEWS, "v10");
+        else return SPLIT(URLs.Test.NEWS_REGULAR, "v10");
+    }*/
+
     private void closeFull () {
         try {
             if (driver.findElement(By.cssSelector("body > div.news #closeButton_1239")).isEnabled())

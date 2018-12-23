@@ -12,7 +12,7 @@ public class FirstPage {
     }
     public WebDriver driver;
 
-    @FindBy(css = ".push-allow__item:nth-child(2)")
+    @FindBy(css = ".push-allow__button_no")
     private WebElement SubPushup;
 
     /*@FindBy(id = "password")

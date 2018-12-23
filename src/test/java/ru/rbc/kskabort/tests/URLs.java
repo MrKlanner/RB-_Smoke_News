@@ -96,9 +96,9 @@ class URLs {
         String[] mass = new String[0];
         if (param.equals("topline")) {*/
     static class Mass{
-        static final String[] topline = {Prod.TV, Prod.NEWSPAPER, Prod.MAGAZINE, Prod.RBCPLUS, Prod.QUOTE, Prod.CRYPTO, Prod.AUTO,
-                        Prod.REALTY, Prod.STYLE, Prod.SPORT, Prod.PRO, Prod.MARKETING, Other.BIZTORG, Other.FRANCHISES, Prod.BC,
-                        Prod.AWARDS, Prod.AWARDS_SPB, Other.CNEWS};
+        static final String[] topline = {Prod.TV, Prod.NEWSPAPER, Prod.MAGAZINE, Prod.RBCPLUS, Prod.PRO, Prod.QUOTE, Prod.AUTO, Prod.SPORT,
+                        Prod.REALTY, Prod.STYLE, Prod.CRYPTO, Prod.MARKETING, Other.BIZTORG, Other.FRANCHISES, Prod.BC,
+                        Prod.AWARDS, Prod.AWARDS_SPB};
         static final String[] top_add = {Other.HEALTH, Prod.PINK, Prod.AWARDS.substring(0, 24)};
     }
 
