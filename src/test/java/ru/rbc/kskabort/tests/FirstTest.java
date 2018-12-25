@@ -8,12 +8,13 @@
 
 package ru.rbc.kskabort.tests;
 
+import com.codeborne.selenide.Configuration;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ComparisonFailure;
 import org.junit.Test;
-import org.openqa.selenium.*;
-import org.openqa.selenium.chrome.ChromeDriver;
+/*import org.openqa.selenium.*;
+/*import org.openqa.selenium.chrome.ChromeDriver;*/
 import org.openqa.selenium.interactions.Actions;
 import ru.rbc.kskabort.pages.FirstPage;
 import ru.rbc.kskabort.pages.SecondPage;
@@ -24,8 +25,10 @@ import ru.rbc.kskabort.tests.URLs.Staging;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import static com.codeborne.selenide.Selenide.*;
+import static com.codeborne.selenide.Condition.*;
 import static java.lang.Thread.sleep;
 import static org.junit.Assert.assertEquals;
 import static ru.rbc.kskabort.tests.URLs.SPLIT;
@@ -34,7 +37,7 @@ import static ru.rbc.kskabort.tests.URLs.SPLIT;
 
 public class FirstTest {
 
-    private static WebDriver driver;
+    /*private static WebDriver driver;*/
     //private StringBuffer verificationErrors = new StringBuffer();
     public static FirstPage firstPage;
     public static SecondPage secondPage;
@@ -44,23 +47,23 @@ public class FirstTest {
     @BeforeClass
     public static void setup() throws InterruptedException, AWTException {
         System.setProperty("webdriver.chrome.driver", "C:/Users/Kosta/Documents/chrome_driver/chromedriver.exe");
-/*       //Для режима инкогнито
+        Configuration.browser = "chrome";
+        /*Для режима инкогнито
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--incognito");
         DesiredCapabilities capabilities = DesiredCapabilities.chrome();
         capabilities.setCapability(ChromeOptions.CAPABILITY, options);*/
-        driver = new ChromeDriver(); //новое окно инкогнито
+        /*driver = new ChromeDriver(); //новое окно инкогнито*/
         //driver = new ChromeDriver();
         //driver.manage().deleteAllCookies(); //чистим куки
         //driver.manage().window().maximize();
-        firstPage = new FirstPage(driver);
         secondPage = new SecondPage(driver);
         staticPageObjects = new StaticPageObjects(driver);
 
         // устанавливаем таймаут ожидания загрузки
-        driver.manage().timeouts().pageLoadTimeout(10, TimeUnit.SECONDS);
+/*        driver.manage().timeouts().pageLoadTimeout(10, TimeUnit.SECONDS);
         driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
-        driver.manage().window().maximize();
+        driver.manage().window().maximize();*/
 
         System.out.println(ConsoleColors.RED_BOLD_BRIGHT + "-----------------------------------------------------------" + ConsoleColors.RESET);
 
@@ -90,7 +93,7 @@ public class FirstTest {
     @Test
     //ПОИСК
     public void test_search() {
-        driver.get(SPLIT(Staging.NEWS, "10A"));
+        open(SPLIT(Staging.NEWS, "v10"));
         closeFull();
         String t = "Путин";
         staticPageObjects.searchQuery(t);
@@ -113,10 +116,10 @@ public class FirstTest {
 
         int n = 2;
         //Лента новостей. Часть 1 (Сравнить url ленты новостей с продом)
-        try {driver.get(SPLIT(Prod.NEWS, "10A"));}
+        try {open(SPLIT(Prod.NEWS, "10A"));}
         catch (TimeoutException ignore) {}
         String lenta_text = staticPageObjects.getLentaUrl(n);
-        driver.get(SPLIT(Staging.NEWS, "10A"));
+        open(SPLIT(Staging.NEWS, "10A"));
         String lenta_text1 = staticPageObjects.getLentaUrl(n);
         assertEquals(cleanUrl(lenta_text), cleanUrl(lenta_text1));
         System.out.println(ConsoleColors.YELLOW_BOLD_BRIGHT + "Проверка ЛЕНТЫ НОВОСТЕЙ (Часть 1) успешно завершена" + ConsoleColors.RESET);
