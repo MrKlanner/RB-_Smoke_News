@@ -25,6 +25,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
+import static com.codeborne.selenide.Selenide.*;
 import static java.lang.Thread.sleep;
 import static org.junit.Assert.assertEquals;
 import static ru.rbc.kskabort.tests.URLs.SPLIT;
@@ -80,7 +81,7 @@ public class FirstTest {
     @Test
     //TITLE
     public void test_title() {
-        driver.get(SPLIT(Prod.NEWS, "v10"));
+        open(SPLIT(Prod.NEWS, "v10"));
         closeFull();
         assertEquals(driver.getTitle(), "РБК — новости, акции, курсы валют, доллар, евро");
         System.out.println(ConsoleColors.GREEN_BOLD_BRIGHT + "Проверка TITLE успешно завершена" + ConsoleColors.RESET);
