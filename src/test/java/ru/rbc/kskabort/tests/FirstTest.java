@@ -31,6 +31,7 @@ import static com.codeborne.selenide.Selenide.*;
 import com.codeborne.selenide.WebDriverRunner.*;
 import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.WebDriverRunner.isChrome;
+import static com.codeborne.selenide.WebDriverRunner.url;
 import static java.lang.Thread.sleep;
 import static org.junit.Assert.assertEquals;
 import static ru.rbc.kskabort.tests.URLs.SPLIT;
@@ -128,12 +129,12 @@ public class FirstTest {
         System.out.println(ConsoleColors.YELLOW_BOLD_BRIGHT + "Проверка ЛЕНТЫ НОВОСТЕЙ (Часть 1) успешно завершена" + ConsoleColors.RESET);
 
         //Лента новостей. Часть 2 (Проверка редиректа)
-        driver.get(SPLIT(Staging.NEWS, "10A"));
+        open(SPLIT(Staging.NEWS, "10A"));
         closeFull();
         String lenta_url = staticPageObjects.getLentaUrl(n); // доработать
         staticPageObjects.clickLenta(n);
         closeFull();
-        if (driver.getCurrentUrl().contains(cleanUrl(lenta_url)))
+        if (url().contains(cleanUrl(lenta_url)))
             System.out.println(ConsoleColors.YELLOW_BOLD_BRIGHT + "Проверка ЛЕНТЫ НОВОСТЕЙ (Часть 2) успешно завершена" + ConsoleColors.RESET);
     }
 
