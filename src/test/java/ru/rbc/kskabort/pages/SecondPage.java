@@ -21,8 +21,7 @@ public class SecondPage {
     private WebElement searchQuerys;
 
     public String serchQuerys(int i) {
-        $(searchQuerys + ":nth-child(" + Integer.toString(i) + ") span.search-item__text");
-        return this;
+        return $(searchQuerys + ":nth-child(" + Integer.toString(i) + ") span.search-item__text").toString();
     }
 
 }

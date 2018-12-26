@@ -7,13 +7,15 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import ru.rbc.kskabort.tests.ConsoleColors;
 
+import static com.codeborne.selenide.Selenide.$;
+
 public class StaticPageObjects {
 
-    public StaticPageObjects (WebDriver driver) {
+    /*public StaticPageObjects (WebDriver driver) {
         PageFactory.initElements(driver, this);
         this.driver = driver;
     }
-    private WebDriver driver;
+    private WebDriver driver;*/
 
     //Лого РБК
     @FindBy(css = ".topline__logo") //.topline__logo
@@ -45,15 +47,15 @@ public class StaticPageObjects {
 
     public String getLentaUrl( int i) {
         if (i != 4)
-            return driver.findElement(By.cssSelector(".news-feed__item:nth-child(" + Integer.toString(i) + ")")).getAttribute("href");
+            return $(".news-feed__item:nth-child(" + Integer.toString(i) + ")").attr("href");
         else return new Error(ConsoleColors.RED_BOLD + "No such lenta element"+ ConsoleColors.RESET).getMessage();
     }
     public void clickLenta( int i) {
-        driver.findElement(By.cssSelector(".news-feed__item:nth-child(" + Integer.toString(i) + ")")).click();
+        $(".news-feed__item:nth-child(" + Integer.toString(i) + ")").click();
     }
     public String getLentaText( int i) {
         if (i != 4)
-            return driver.findElement(By.cssSelector(".news-feed__item:nth-child(" + Integer.toString(i) + ") .news-feed__item__title")).getText();
+            return $(".news-feed__item:nth-child(" + Integer.toString(i) + ") .news-feed__item__title").getText();
         else return new Error(ConsoleColors.RED_BOLD + "No such lenta element"+ ConsoleColors.RESET).getMessage();
     }
 
@@ -62,11 +64,11 @@ public class StaticPageObjects {
         final int MAX_INDEX_TOP_ADD = 2;*/
          if (i < max_c && s.equals("common")) {
              i += 1;
-             return driver.findElement(By.cssSelector(".topline__item:nth-child(" + Integer.toString(i) + ")"));
+             return $(".topline__item:nth-child(" + Integer.toString(i) + ")");
          }
          else if (i < max_add && s.equals("add")) {
              i += 1;
-             return driver.findElement(By.cssSelector(".topline__item_special:nth-child(" + Integer.toString(i) + ")"));
+             return $(".topline__item_special:nth-child(" + Integer.toString(i) + ")");
          }
          else throw new Error("Something going wrong in getTopItem Case!");
     }

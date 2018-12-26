@@ -28,7 +28,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import static com.codeborne.selenide.Selenide.*;
+import com.codeborne.selenide.WebDriverRunner.*;
 import static com.codeborne.selenide.Condition.*;
+import static com.codeborne.selenide.WebDriverRunner.isChrome;
 import static java.lang.Thread.sleep;
 import static org.junit.Assert.assertEquals;
 import static ru.rbc.kskabort.tests.URLs.SPLIT;
@@ -57,8 +59,8 @@ public class FirstTest {
         //driver = new ChromeDriver();
         //driver.manage().deleteAllCookies(); //чистим куки
         //driver.manage().window().maximize();
-        secondPage = new SecondPage(driver);
-        staticPageObjects = new StaticPageObjects(driver);
+        //secondPage = new SecondPage(driver);
+        //staticPageObjects = new StaticPageObjects(driver);
 
         // устанавливаем таймаут ожидания загрузки
 /*        driver.manage().timeouts().pageLoadTimeout(10, TimeUnit.SECONDS);
@@ -69,6 +71,7 @@ public class FirstTest {
 
         //Проверка Автоподгрузки (Проверка в ручном режиме, продолжение в конце)
         Actions actions = new Actions(driver);
+
         try {driver.get(SPLIT(Prod.NEWS, "10A"));}
         catch (TimeoutException ingore)
         {actions.sendKeys(Keys.ESCAPE);}
