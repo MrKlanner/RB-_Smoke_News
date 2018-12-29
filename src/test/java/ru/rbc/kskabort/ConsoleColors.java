@@ -1,4 +1,4 @@
-package ru.rbc.kskabort.tests;
+package ru.rbc.kskabort;
 
 public class ConsoleColors {
     // Reset

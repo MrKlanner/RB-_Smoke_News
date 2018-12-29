@@ -2,16 +2,7 @@ package ru.rbc.kskabort.pages;
 
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.SelenideElement;
-import com.codeborne.selenide.conditions.*;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.How;
-import org.openqa.selenium.support.PageFactory;
-import ru.rbc.kskabort.tests.ConsoleColors;
-
-import javax.xml.bind.Element;
+import ru.rbc.kskabort.ConsoleColors;
 
 import static com.codeborne.selenide.Selenide.*;
 

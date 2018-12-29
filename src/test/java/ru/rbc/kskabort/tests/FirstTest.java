@@ -2,14 +2,13 @@
  * 1) Проверка подгрузки пока что в разработке. Хотелось бы реализовать с таймером,
  *    параллельно считающим во время работы программы и в определенный момент (5-10 мин.)
  *    срабтывающий, давая тем самым отмашку допроверять автоподгрузку)
- * 2) Обработка исключений (не найден элемент и т.д.)
+ * 2) Обработка исключений (не найден элемент и т.д.) - частично реализовано в Фраймфорке Selenide
  * 3) Выполнять проверку загрузки каждый раз и приостанавливать загрузку если больше какого-то определенного промежутка времени
  * */
 
 package ru.rbc.kskabort.tests;
 
 import com.codeborne.selenide.Configuration;
-import com.codeborne.selenide.WebDriverRunner;
 import org.junit.*;
 /*import org.openqa.selenium.*;
 /*import org.openqa.selenium.chrome.ChromeDriver;*/
@@ -20,26 +19,23 @@ import org.openqa.selenium.Keys;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
+import ru.rbc.kskabort.ConsoleColors;
 import ru.rbc.kskabort.pages.FirstPage;
 import ru.rbc.kskabort.pages.SecondPage;
 import ru.rbc.kskabort.pages.StaticPageObjects;
-import ru.rbc.kskabort.tests.URLs.Prod;
-import ru.rbc.kskabort.tests.URLs.Staging;
+import ru.rbc.kskabort.pages.URLs;
+import ru.rbc.kskabort.pages.URLs.Prod;
+import ru.rbc.kskabort.pages.URLs.Staging;
 
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 import static com.codeborne.selenide.Browsers.CHROME;
 import static com.codeborne.selenide.Selenide.*;
-import com.codeborne.selenide.WebDriverRunner.*;
-import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.WebDriverRunner.*;
 import static java.lang.Thread.sleep;
 import static org.junit.Assert.assertEquals;
-import static ru.rbc.kskabort.tests.URLs.SPLIT;
+import static ru.rbc.kskabort.pages.URLs.SPLIT;
 
 public class FirstTest {
 
@@ -206,7 +202,7 @@ public class FirstTest {
             try {
                 assertEquals(mass[i] + "?utm_source=topline", url());
             } catch (ComparisonFailure c) {
-                //if (!driver.getCurrentUrl().contains(cleanUrlSimple(mass[i])))
+                //if (!url().contains(cleanUrlSimple(mass[i])))
                     System.out.println(c);
             }
             TabActions.Close();
@@ -238,7 +234,7 @@ public class FirstTest {
                     try {
                         assertEquals(mass_add[k], url());
                     } catch (ComparisonFailure c) {
-                        //if (!driver.getCurrentUrl().contains(cleanUrlSimple(mass[i])))
+                        //if (!url().contains(cleanUrlSimple(mass[i])))
                         System.out.println(c);
                     }
                     break;
@@ -293,7 +289,7 @@ public class FirstTest {
             }
             tabs = new ArrayList<>(driver.getWindowHandles());
             driver.switchTo().window(tabs.get(2));// Переключение на третью вкладку
-            try {assertEquals(driver.getCurrentUrl(), mass[j]+"?utm_source=topline");}
+            try {assertEquals(url(), mass[j]+"?utm_source=topline");}
             catch (ComparisonFailure c)
             {System.out.println(c);}
             TabActions.Close();
@@ -310,16 +306,24 @@ public class FirstTest {
 /*        Actions actions = new Actions(driver);
         try {open(SPLIT(Prod.NEWS, "10A"));}
         catch (TimeoutException ingore)
-        {actions.sendKeys(Keys.ESCAPE);}*/
+        {actions.sendKeys(Keys.ESCAPE);}
 
-        /**TOPLINE размер плеера*/
-        $(".topline__video-block").click(); sleep(1000); //запуск прямого эфира из топлайна
+            @Test
+        public void test_online() throws Exception {
+        open(SPLIT(Prod.NEWS, "10A"));
+/*        Actions actions = new Actions(driver);
+        try {open(SPLIT(Prod.NEWS, "10A"));}
+        catch (TimeoutException ingore)
+        {actions.sendKeys(Keys.ESCAPE);}
+
+        /**TOPLINE размер плеера
+        $(".topline__video-block").click(); sleep(1000); //запуск прямого эфира из топлайна .live-tv__awards
         $(".vjs-play-control").click(); sleep(1000); //пауза
         $(".topline__video-block").click(); sleep(1000); //Play
         $(".vjs-mute-control").click(); sleep(1000); // отключение звука
         $(".vjs-mute-control").click(); sleep(1000); // включение звука
 
-        /**MEDIUM размер плеера*/
+        /**MEDIUM размер плеера
         $(".vjs-change-view-control").click(); sleep(1000);
         $(".vjs-mute-control").click(); sleep(1000); // отключение звука
         $(".vjs-mute-control").click(); sleep(1000); // включение звука
@@ -339,7 +343,7 @@ public class FirstTest {
             sleep(1000);
         }
 
-        /**FULLSCREEN размер плеера*/
+        /**FULLSCREEN размер плеера
         $(".vjs-fullscreen-control").click(); sleep(500);
         //Проверка смены качества
         for (int i = 1; i<= 4; i++) {
@@ -351,7 +355,7 @@ public class FirstTest {
         $(".vjs-play-control").click(); sleep(1000);
         $(".vjs-big-play-button").click();sleep(1000);
         $(".vjs-fullscreen-control").click(); //Выход из фуллскрина
-
+        */
     }
 
     @AfterClass()

@@ -1,14 +1,12 @@
 package ru.rbc.kskabort.pages;
 
 import com.codeborne.selenide.Condition;
+import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.PageFactory;
-import ru.rbc.kskabort.tests.ConsoleColors;
+import ru.rbc.kskabort.ConsoleColors;
 
 import static com.codeborne.selenide.Selenide.$;
+import static com.codeborne.selenide.Selenide.sleep;
 
 public class StaticPageObjects {
 
@@ -16,32 +14,70 @@ public class StaticPageObjects {
         toplineLogo.shouldBe(Condition.visible);
     }
 
+    /**Инициализация*/
+
     //Лого РБК
-    //@FindBy(css = ".topline__logo") //.topline__logo
     public SelenideElement toplineLogo = $(".topline__logo");
 
-    /*//Ссылки в топлайне
-    @FindBy(css = ".topline__item")
-    public SelenideElement topItem;
-    @FindBy(css = ".topline__item_special")
-    public SelenideElement topItemSpecial;*/
-
     //Поиск
-    /*@FindBy(css = "div.topline__search__menu.js-search-open")*/
-    /*@FindBy(css = "input.topline__search__input")*/
-    /*@FindBy(css = "input.topline__search__button")*/
     private SelenideElement mainSearchButton = $("div.topline__search__menu.js-search-open");
     private SelenideElement inputSearch = $("input.topline__search__input");
     private SelenideElement searchButton = $("input.topline__search__button");
 
-    /*//Лента новостей
-    @FindBy(css = ".news-feed__item") //
-    private SelenideElement lentaElement;*/
+    //ПРЯМОЙ ЭФИР
+    //Общие элементы
+    private SelenideElement PauseButton = $(".vjs-play-control");
+    //TOPLINE размер плеера
+    private SelenideElement TopPlayButton = $(".live-tv__main__inner"); //запуск прямого эфира из топлайна
+    private SelenideElement TopMute = $(".vjs-mute-control");
+    private SelenideElement TopPlay_v8 = $(".topline__video-block");
+    private SelenideElement TopChangeView = $(".vjs-change-view-control");
+    //MEDIUM размер плеера
+    private SelenideElement PrePollSkip = $(".vast-skip-button");
+    private SelenideElement MidSizeClose = $(".live-tv__overlay__navbar__close");
+    private SelenideElement BigPlayButton = $(".vjs-big-play-button");
+    private SelenideElement MidQualityBtn = $(".js-videojs-quality-span");
+    private SelenideElement MidQualityElement = $(".vjs-select-quality-item"); //вызов обязательно из функции
+    //FULLSCREEN размер плеера
+    private SelenideElement FullQualityBtn = $(".js-videojs-quality-btn");
+
+    /*
+    //Проверка ползунка громкости
+    // http://internetka.in.ua/selenium-drag-and-drop/
+    SelenideElement sliderTrack = $(".vjs-volume-horizontal");
+    SelenideElement slider = $(".vjs-volume-level");
+    assertEquals(getCurrentPosition(sliderTrack, slider), 100);
+    //        setSliderPosition(20, sliderTrack, slider);
+    assertEquals(getCurrentPosition(sliderTrack, slider), 20);
+
+    */
+    /*FULLSCREEN размер плеера
+    $(".vjs-fullscreen-control").click(); sleep(500);
+    //Проверка смены качества
+        for (int i = 1; i<= 4; i++) {
+        $(".js-videojs-quality-btn").click();
+        $(".vjs-select-quality-item:nth-child(" + Integer.toString(i) + ")").click();
+        sleep(1000);
+    }
+    $(".vjs-play-control").click(); sleep(1000);
+    $(".vjs-big-play-button").click();sleep(1000);
+    $(".vjs-fullscreen-control").click(); //Выход из фуллскрина*/
+
+    /**Методы*/
 
     public void searchQuery(String query) {
         mainSearchButton.click();
         inputSearch.sendKeys(query);
         searchButton.click();
+    }
+
+    public void ChangeQuality()
+    {
+        //Проверка смены качества
+        for (int i = 1; i<= 4; i++) {
+            MidQualityBtn.click();
+            $(MidQualityElement.append(Integer.toString(i)).append(")")).click();
+        }
     }
 
     public String getLentaUrl( int i) {
@@ -72,5 +108,3 @@ public class StaticPageObjects {
          else throw new Error("Something going wrong in getTopItem Case!");
     }
 }
-//.topline__item_special:nth-child(2)
-//.topline__item_cnews:nth-child(8)
