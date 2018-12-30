@@ -11,13 +11,25 @@ package ru.rbc.kskabort.tests;
  *     .build()
  *     .perform(); */
 
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.interactions.Actions;
+
 import java.awt.*;
 import java.awt.event.KeyEvent;
 
+import static com.codeborne.selenide.WebDriverRunner.getWebDriver;
+
 public class TabActions {
 
-    static void New() throws AWTException, InterruptedException {
-    Robot robot = new Robot();
+    static void PressEscape()
+    {
+        Actions actions = new Actions(getWebDriver());
+        actions.sendKeys(Keys.ESCAPE).release().build().perform();
+    }
+
+    static void New() throws AWTException, InterruptedException
+    {
+        Robot robot = new Robot();
         robot.keyPress(KeyEvent.VK_CONTROL);
         Thread.sleep(500);
         robot.keyPress(KeyEvent.VK_T);
@@ -26,7 +38,8 @@ public class TabActions {
         robot.keyRelease(KeyEvent.VK_T);
     }
 
-    static void Switch() throws AWTException, InterruptedException {
+    static void Switch() throws AWTException, InterruptedException
+    {
         Robot robot = new Robot();
         robot.keyPress(KeyEvent.VK_CONTROL);
         Thread.sleep(500);
@@ -36,7 +49,8 @@ public class TabActions {
         robot.keyRelease(KeyEvent.VK_TAB);
     }
 
-    static void Close() throws AWTException, InterruptedException {
+    static void Close() throws AWTException, InterruptedException
+    {
         Robot robot = new Robot();
         robot.keyPress(KeyEvent.VK_CONTROL);
         Thread.sleep(500);
@@ -46,7 +60,8 @@ public class TabActions {
         robot.keyRelease(KeyEvent.VK_F4);
     }
 
-    static void Open_in_new_tab() throws AWTException, InterruptedException {
+    static void Open_in_new_tab() throws AWTException, InterruptedException
+    {
         Robot robot = new Robot();
         robot.keyPress(KeyEvent.VK_CONTROL);
         Thread.sleep(500);

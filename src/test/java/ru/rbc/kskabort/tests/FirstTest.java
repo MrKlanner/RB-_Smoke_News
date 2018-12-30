@@ -9,12 +9,10 @@
 package ru.rbc.kskabort.tests;
 
 import com.codeborne.selenide.Configuration;
-import org.junit.*;
-/*import org.openqa.selenium.*;
-/*import org.openqa.selenium.chrome.ChromeDriver;*/
-/*import org.openqa.selenium.Keys;
-import org.openqa.selenium.WebElement;*/
-/*import org.openqa.selenium.interactions.Actions;*/
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.ComparisonFailure;
+import org.junit.Test;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
@@ -32,10 +30,16 @@ import java.util.ArrayList;
 
 import static com.codeborne.selenide.Browsers.CHROME;
 import static com.codeborne.selenide.Selenide.*;
-import static com.codeborne.selenide.WebDriverRunner.*;
-import static java.lang.Thread.sleep;
+import static com.codeborne.selenide.WebDriverRunner.getWebDriver;
+import static com.codeborne.selenide.WebDriverRunner.url;
 import static org.junit.Assert.assertEquals;
 import static ru.rbc.kskabort.pages.URLs.SPLIT;
+
+/*import org.openqa.selenium.*;
+/*import org.openqa.selenium.chrome.ChromeDriver;*/
+/*import org.openqa.selenium.Keys;
+import org.openqa.selenium.WebElement;*/
+/*import org.openqa.selenium.interactions.Actions;*/
 
 public class FirstTest {
 
@@ -52,7 +56,7 @@ public class FirstTest {
 
     @BeforeClass
     public static void setup() throws InterruptedException, AWTException {
-        System.setProperty("webdriver.chrome.driver", "C:/Users/kskabort/Documents/chrome_driver/chromedriver.exe");
+        System.setProperty("webdriver.chrome.driver", "C:/Users/Kosta/Documents/chrome_driver/chromedriver.exe");
         Configuration.browser = CHROME;
         Configuration.startMaximized = true;
         //Configuration.baseUrl = SPLIT(Prod.NEWS, "10A");
@@ -84,8 +88,7 @@ public class FirstTest {
         firstPage.closeSub();
 
         //Проверка Автоподгрузки (Проверка в ручном режиме, продолжение в конце)
-        Actions actions = new Actions(getWebDriver());
-        actions.sendKeys(Keys.ESCAPE).release().build().perform();
+        TabActions.PressEscape();
         TabActions.New();
         ArrayList<String> tabs2 = new ArrayList<>(getWebDriver().getWindowHandles()); // Получение списка вкладок
         switchTo().window(tabs2.get(1));// Переключение на вторую вкладку
@@ -152,7 +155,7 @@ public class FirstTest {
     public void test_topline() throws Exception {
         Actions actions = new Actions(getWebDriver());
         open(SPLIT(Prod.NEWS, "10A"));
-        actions.sendKeys(Keys.ESCAPE).release().build().perform();//firstPage.closeOpin();
+        TabActions.PressEscape();//firstPage.closeOpin();
 
         //Проверка эмблемы из топлайна
         actions.keyDown(Keys.LEFT_CONTROL).click(staticPageObjects.toplineLogo).keyUp(Keys.LEFT_CONTROL).build().perform();
@@ -303,26 +306,34 @@ public class FirstTest {
     @Test
     public void test_online() throws Exception {
         open(SPLIT(Prod.NEWS, "10A"));
-/*        Actions actions = new Actions(driver);
-        try {open(SPLIT(Prod.NEWS, "10A"));}
+        TabActions.PressEscape();
+        Actions actions = new Actions(getWebDriver());
+        /*try {open(SPLIT(Prod.NEWS, "10A"));}
         catch (TimeoutException ingore)
-        {actions.sendKeys(Keys.ESCAPE);}
+        {actions.sendKeys(Keys.ESCAPE);}*/
 
-            @Test
-        public void test_online() throws Exception {
-        open(SPLIT(Prod.NEWS, "10A"));
-/*        Actions actions = new Actions(driver);
-        try {open(SPLIT(Prod.NEWS, "10A"));}
-        catch (TimeoutException ingore)
-        {actions.sendKeys(Keys.ESCAPE);}
 
-        /**TOPLINE размер плеера
-        $(".topline__video-block").click(); sleep(1000); //запуск прямого эфира из топлайна .live-tv__awards
-        $(".vjs-play-control").click(); sleep(1000); //пауза
-        $(".topline__video-block").click(); sleep(1000); //Play
-        $(".vjs-mute-control").click(); sleep(1000); // отключение звука
-        $(".vjs-mute-control").click(); sleep(1000); // включение звука
+        //TOPLINE размер плеера
+        staticPageObjects.TopPlayButton.click(); sleep(1000); //Запуск прямого эфира из топлайна
+        staticPageObjects.PauseButton.click(); sleep(1000);
+        staticPageObjects.TopPlayButton.click(); sleep(1000);
+        staticPageObjects.Mute.click(); sleep(1000);
+        staticPageObjects.Mute.click(); sleep(1000);
 
+        //Переключение на средний размер окна
+        staticPageObjects.TopChangeView.click(); sleep(1000);
+
+        //MEDIUM размер плеера
+        staticPageObjects.PrePollSkip.click(); sleep(1000);
+        staticPageObjects.PauseButton.click(); sleep(1000);
+        staticPageObjects.BigPlayButton.click(); sleep(1000);
+        staticPageObjects.Mute.click(); sleep(1000);
+        staticPageObjects.Mute.click(); sleep(1000);
+        /*actions.moveToElement(staticPageObjects.MidQualityBtn).perform();*/
+        staticPageObjects.MidQualityBtn.click(); sleep(1000);
+        staticPageObjects.ChangeQuality();
+
+        /*
         /**MEDIUM размер плеера
         $(".vjs-change-view-control").click(); sleep(1000);
         $(".vjs-mute-control").click(); sleep(1000); // отключение звука
@@ -333,17 +344,11 @@ public class FirstTest {
         WebElement slider = $(".vjs-volume-level");
         assertEquals(getCurrentPosition(sliderTrack, slider), 100);
 //        setSliderPosition(20, sliderTrack, slider);
-        assertEquals(getCurrentPosition(sliderTrack, slider), 20);
+        assertEquals(getCurrentPosition(sliderTrack, slider), 20);*/
 
         //Проверка смены качества
-        for (int i = 1; i<= 4; i++) {
-            $(".js-videojs-quality-btn").click();
-            $(".vjs-select-quality-item:nth-child(" + Integer.toString(i) + ")").scrollTo();
-            $(".vjs-select-quality-item:nth-child(" + Integer.toString(i) + ")").click();
-            sleep(1000);
-        }
 
-        /**FULLSCREEN размер плеера
+        /*FULLSCREEN размер плеера
         $(".vjs-fullscreen-control").click(); sleep(500);
         //Проверка смены качества
         for (int i = 1; i<= 4; i++) {

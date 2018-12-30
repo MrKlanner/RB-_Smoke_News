@@ -1,12 +1,10 @@
 package ru.rbc.kskabort.pages;
 
 import com.codeborne.selenide.Condition;
-import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
 import ru.rbc.kskabort.ConsoleColors;
 
 import static com.codeborne.selenide.Selenide.$;
-import static com.codeborne.selenide.Selenide.sleep;
 
 public class StaticPageObjects {
 
@@ -26,17 +24,17 @@ public class StaticPageObjects {
 
     //ПРЯМОЙ ЭФИР
     //Общие элементы
-    private SelenideElement PauseButton = $(".vjs-play-control");
+    public SelenideElement PauseButton = $(".vjs-play-control"); //Общая пауза
+    public SelenideElement Mute = $(".vjs-mute-control"); //Общий  mute
     //TOPLINE размер плеера
-    private SelenideElement TopPlayButton = $(".live-tv__main__inner"); //запуск прямого эфира из топлайна
-    private SelenideElement TopMute = $(".vjs-mute-control");
+    public SelenideElement TopPlayButton = $(".live-tv__main__inner"); //запуск прямого эфира из топлайна
     private SelenideElement TopPlay_v8 = $(".topline__video-block");
-    private SelenideElement TopChangeView = $(".vjs-change-view-control");
+    public SelenideElement TopChangeView = $(".vjs-change-view-control");
     //MEDIUM размер плеера
-    private SelenideElement PrePollSkip = $(".vast-skip-button");
+    public SelenideElement PrePollSkip = $(".vast-skip-button");
     private SelenideElement MidSizeClose = $(".live-tv__overlay__navbar__close");
-    private SelenideElement BigPlayButton = $(".vjs-big-play-button");
-    private SelenideElement MidQualityBtn = $(".js-videojs-quality-span");
+    public SelenideElement BigPlayButton = $(".vjs-big-play-button");
+    public SelenideElement MidQualityBtn = $(".js-videojs-quality-span");
     private SelenideElement MidQualityElement = $(".vjs-select-quality-item"); //вызов обязательно из функции
     //FULLSCREEN размер плеера
     private SelenideElement FullQualityBtn = $(".js-videojs-quality-btn");
