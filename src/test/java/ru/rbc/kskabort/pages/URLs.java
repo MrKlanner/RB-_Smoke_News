@@ -92,6 +92,17 @@ public class URLs {
         public static final String HEALTH = "http://health.rbc.ru/";
     }
 
+    public class Static {
+        public static final String ABCOMPANY = "http://www.rbcholding.ru/about.shtml";
+        public static final String CONTACTS = "https://www.rbc.ru/contacts/";
+        public static final String REDACTION = "https://www.rbc.ru/editors/";
+        public static final String ADVERT = "https://rbc.ru/advert/";
+        public static final String TRAINPROG = "http://intern.rbc.ru/";
+
+        public static final String ABAUTORS = "";
+        public static final String INFABLIM = "";
+    }
+
 /*    static String[] i_need_mass (String param){
         String[] mass = new String[0];
         if (param.equals("topline")) {*/

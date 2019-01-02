@@ -4,18 +4,64 @@
  *    срабтывающий, давая тем самым отмашку допроверять автоподгрузку)
  * 2) Обработка исключений (не найден элемент и т.д.) - частично реализовано в Фраймфорке Selenide
  * 3) Выполнять проверку загрузки каждый раз и приостанавливать загрузку если больше какого-то определенного промежутка времени
+ *
+ * СМОК:
+ *
+ * 1. Общие элементы
+ *
+ * Топлайн на rbc.ru (+)
+ * Прямой эфир (+-)
+ * Логика отображения данных в карточках на проекте rbc.ru
+ * Лента новостей (+)
+ * Ключевые индикаторы
+ * Подвал
+ *
+ *
+ *
+ * 2. Главная страница
+ *
+ * Блоки главной страницы
+ * Блоки главное
+ * Блок Центральная колонка
+ *
+ * Бесконечная главная
+ * Спецблок Истории (?)
+ * Блок Опросы
+ * Главные страницы регионов
+ * Блок Подписка на рассылку:
+ * - Подтверждение подписки из письма
+ * - Отписка от рассылки
+ *
+ *
+ *
+ * 3. Логика формирования новостей на главной (Типы пользователей)
+ *
+ * Новые пользователи. При куках main-short и main-long отображается блок "Главное за сутки"
+ * (на 01.01.19) - отображается пебликатор Главное
+ *
+ * При закрытии и открытии браузера как "Новый пользователей" продолжает отображаться "Главное за сутки".
+ *
+ * Старые пользовтели. Если удалить куку main-short отображается блок "Главное".
+ *
+ *
+ *
+ * 4.Страница с удаленным текстом по решению суда
+ * Открыть страницу и проверить, что ничего не разъехалось
+ *
+ * 5. Статичные страницы
+ * Проверить ссылки из подвала
  * */
 
 package ru.rbc.kskabort.tests;
 
 import com.codeborne.selenide.Configuration;
+import com.codeborne.selenide.SelenideElement;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ComparisonFailure;
 import org.junit.Test;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import ru.rbc.kskabort.ConsoleColors;
 import ru.rbc.kskabort.pages.FirstPage;
@@ -29,6 +75,7 @@ import java.awt.*;
 import java.util.ArrayList;
 
 import static com.codeborne.selenide.Browsers.CHROME;
+import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.*;
 import static com.codeborne.selenide.WebDriverRunner.getWebDriver;
 import static com.codeborne.selenide.WebDriverRunner.url;
@@ -58,6 +105,7 @@ public class FirstTest {
     public static void setup() throws InterruptedException, AWTException {
         System.setProperty("webdriver.chrome.driver", "C:/Users/Kosta/Documents/chrome_driver/chromedriver.exe");
         Configuration.browser = CHROME;
+        Configuration.reopenBrowserOnFail = true;
         Configuration.startMaximized = true;
         //Configuration.baseUrl = SPLIT(Prod.NEWS, "10A");
         /*Для режима инкогнито
@@ -151,7 +199,7 @@ public class FirstTest {
 
 
     @Test
-    //ГЛАВНАЯ. ТОПЛАЙН.
+    //ГЛАВНАЯ. ТОПЛАЙН НА rbc.ru
     public void test_topline() throws Exception {
         Actions actions = new Actions(getWebDriver());
         open(SPLIT(Prod.NEWS, "10A"));
@@ -324,24 +372,24 @@ public class FirstTest {
         staticPageObjects.TopChangeView.click(); sleep(1000);
 
         //MEDIUM размер плеера
-        staticPageObjects.PrePollSkip.click(); sleep(1000);
+        if (staticPageObjects.PreRollSkip.is(visible)) {
+            staticPageObjects.PreRollSkip.waitWhile(visible, 1000).click();
+        }
         staticPageObjects.PauseButton.click(); sleep(1000);
         staticPageObjects.BigPlayButton.click(); sleep(1000);
         staticPageObjects.Mute.click(); sleep(1000);
         staticPageObjects.Mute.click(); sleep(1000);
-        /*actions.moveToElement(staticPageObjects.MidQualityBtn).perform();*/
-        staticPageObjects.MidQualityBtn.click(); sleep(1000);
+        /*staticPageObjects.MidPlayer.hover(); TabActions.Mose_move(staticPageObjects.Mute);*/
+        /*TabActions.Mose_move(staticPageObjects.PauseButton);*/
+        //staticPageObjects.MidQualityBtn.click(); sleep(1000);
         staticPageObjects.ChangeQuality();
 
-        /*
-        /**MEDIUM размер плеера
-        $(".vjs-change-view-control").click(); sleep(1000);
-        $(".vjs-mute-control").click(); sleep(1000); // отключение звука
-        $(".vjs-mute-control").click(); sleep(1000); // включение звука
         //Проверка ползунка громкости
         // http://internetka.in.ua/selenium-drag-and-drop/
-        WebElement sliderTrack = $(".vjs-volume-horizontal");
-        WebElement slider = $(".vjs-volume-level");
+        staticPageObjects.setSliderPosition(70);
+
+        /*WebElement sliderTrack = $(".vjs-volume-horizontal");
+        WebElement slider = $(".vjs-volume-level"); .vjs-volume-level
         assertEquals(getCurrentPosition(sliderTrack, slider), 100);
 //        setSliderPosition(20, sliderTrack, slider);
         assertEquals(getCurrentPosition(sliderTrack, slider), 20);*/
@@ -380,8 +428,8 @@ public class FirstTest {
 
     private void closeFull () {
         try {
-            if ($("body > div.news #closeButton_1239").isEnabled())
-                $("body > div.news #closeButton_1239").click();}
+            if ($("body > div.news #closeButton").isEnabled()) //body > div.news #closeButton_1239
+                $("body > div.news #closeButton").click();}
         catch (NoSuchElementException ignore) {
         }
     }
@@ -419,23 +467,11 @@ public class FirstTest {
         return lnk.substring(0, k);
     }
 
-    private long getValue(WebElement sliderTrack) {
+    private long getValue(SelenideElement sliderTrack) {
         return sliderTrack.getSize().width / 100;
     }
-    private long getCurrentPosition(WebElement sliderTrack, WebElement slider) {
-        // Позицию можно получить по значению атрибута left
-        // getCssValue("left") возвращает абсолютное значение в px,
-        long sliderCenterPx = Integer.parseInt(slider.getCssValue("aria-valuenow") + slider.getSize().width / 2);
-        return sliderCenterPx / getValue(sliderTrack) + 1;
-    }
-/*    private void setSliderPosition(long position, WebElement sliderTrack, WebElement slider) {
-        if (position < 1 || position > 100) {
-            throw new AssertionError("Slider position value should be in the range of 1 to 100");
-        }
-        long xOffset = (position - getCurrentPosition(sliderTrack, sliderTrack)) * getValue(sliderTrack);
-        Actions actions = new Actions(driver);
-        actions.dragAndDropBy(slider, (int) xOffset, 0).perform();
-    }*/
+
+}
    /* public void CloseFullscreen()
     {
         NotEmpty(driver.findElement())
@@ -476,4 +512,4 @@ public class FirstTest {
         }
     }
     */
-}
+
