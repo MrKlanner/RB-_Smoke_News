@@ -24,7 +24,7 @@ import static com.codeborne.selenide.WebDriverRunner.getWebDriver;
 
 public class TabActions {
 
-    static void PressEscape()
+    public static void PressEscape()
     {
         Actions actions = new Actions(getWebDriver());
         actions.sendKeys(Keys.ESCAPE).release().build().perform();

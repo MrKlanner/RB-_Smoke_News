@@ -1,0 +1,5 @@
+$ cat .gitignore
+# комментарий — эта строка игнорируется
+.idea/
+build/
+src/main/

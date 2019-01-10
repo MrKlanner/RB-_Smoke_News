@@ -18,10 +18,10 @@ public class SecondPage extends StaticPageObjects {
         toplineLogo.shouldBe(Condition.visible);
     }
     /*@FindBy(how = How.CSS, className = "div.search-item")*/
-    private WebElement searchQuerys = $("div.search-item");
+    //private SelenideElement searchQuerys = $(".search-item:nth-child(1) .search-item__text");
 
     public String serchQuerys(int i) {
-        return $(searchQuerys + ":nth-child(" + Integer.toString(i) + ") span.search-item__text").toString();
+        return $(".search-item:nth-child(" + Integer.toString(i) + ") span.search-item__text").getText();
     }
 
 }

@@ -1,67 +1,19 @@
-/**Планы:
- * 1) Проверка подгрузки пока что в разработке. Хотелось бы реализовать с таймером,
- *    параллельно считающим во время работы программы и в определенный момент (5-10 мин.)
- *    срабтывающий, давая тем самым отмашку допроверять автоподгрузку)
- * 2) Обработка исключений (не найден элемент и т.д.) - частично реализовано в Фраймфорке Selenide
- * 3) Выполнять проверку загрузки каждый раз и приостанавливать загрузку если больше какого-то определенного промежутка времени
- *
- * СМОК:
- *
- * 1. Общие элементы
- *
- * Топлайн на rbc.ru (+)
- * Прямой эфир (+-)
- * Логика отображения данных в карточках на проекте rbc.ru
- * Лента новостей (+)
- * Ключевые индикаторы
- * Подвал
- *
- *
- *
- * 2. Главная страница
- *
- * Блоки главной страницы
- * Блоки главное
- * Блок Центральная колонка
- *
- * Бесконечная главная
- * Спецблок Истории (?)
- * Блок Опросы
- * Главные страницы регионов
- * Блок Подписка на рассылку:
- * - Подтверждение подписки из письма
- * - Отписка от рассылки
- *
- *
- *
- * 3. Логика формирования новостей на главной (Типы пользователей)
- *
- * Новые пользователи. При куках main-short и main-long отображается блок "Главное за сутки"
- * (на 01.01.19) - отображается пебликатор Главное
- *
- * При закрытии и открытии браузера как "Новый пользователей" продолжает отображаться "Главное за сутки".
- *
- * Старые пользовтели. Если удалить куку main-short отображается блок "Главное".
- *
- *
- *
- * 4.Страница с удаленным текстом по решению суда
- * Открыть страницу и проверить, что ничего не разъехалось
- *
- * 5. Статичные страницы
- * Проверить ссылки из подвала
- * */
-
 package ru.rbc.kskabort.tests;
 
 import com.codeborne.selenide.Configuration;
+import com.codeborne.selenide.Selenide;
+import com.codeborne.selenide.SelenideDriver;
 import com.codeborne.selenide.SelenideElement;
+import com.codeborne.selenide.ex.ElementShould;
+import junit.framework.AssertionFailedError;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ComparisonFailure;
 import org.junit.Test;
+import org.openqa.selenium.ElementNotVisibleException;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.interactions.Actions;
 import ru.rbc.kskabort.ConsoleColors;
 import ru.rbc.kskabort.pages.FirstPage;
@@ -88,6 +40,15 @@ import static ru.rbc.kskabort.pages.URLs.SPLIT;
 import org.openqa.selenium.WebElement;*/
 /*import org.openqa.selenium.interactions.Actions;*/
 
+/**Планы:
+ * 1) Проверка подгрузки пока что в разработке. Хотелось бы реализовать с таймером,
+ *    параллельно считающим во время работы программы и в определенный момент (5-10 мин.)
+ *    срабтывающий, давая тем самым отмашку допроверять автоподгрузку)
+ * 2) Обработка исключений (не найден элемент и т.д.) - частично реализовано в Фраймфорке Selenide
+ * 3) Выполнять проверку загрузки каждый раз и приостанавливать загрузку если больше какого-то определенного промежутка времени
+ *
+ *
+ * СМОК:**/
 public class FirstTest {
 
     public static FirstPage firstPage;
@@ -101,9 +62,53 @@ public class FirstTest {
     public static StaticPageObjects staticPageObjects;*/
 /*    private final String site = TestSite();*/
 
+
+     /**
+     *
+     *
+     *
+     *
+     * Ключевые индикаторы (
+     * Подвал
+     *
+     *
+     *
+     * 2. Главная страница
+     *
+     * Блоки главной страницы
+     * Блоки главное
+     * Блок Центральная колонка
+     *
+     * Бесконечная главная
+     * Спецблок Истории (?)
+     * Блок Опросы
+     * Главные страницы регионов
+     * Блок Подписка на рассылку:
+     * - Подтверждение подписки из письма
+     * - Отписка от рассылки
+     *
+     *
+     *
+     * 3. Логика формирования новостей на главной (Типы пользователей)
+     *
+     * Новые пользователи. При куках main-short и main-long отображается блок "Главное за сутки"
+     * (на 01.01.19) - отображается пебликатор Главное
+     *
+     * При закрытии и открытии браузера как "Новый пользователей" продолжает отображаться "Главное за сутки".
+     *
+     * Старые пользовтели. Если удалить куку main-short отображается блок "Главное".
+     *
+     *
+     *
+     * 4.Страница с удаленным текстом по решению суда
+     * Открыть страницу и проверить, что ничего не разъехалось
+     *
+     * 5. Статичные страницы
+     * Проверить ссылки из подвала
+     * */
     @BeforeClass
     public static void setup() throws InterruptedException, AWTException {
-        System.setProperty("webdriver.chrome.driver", "C:/Users/Kosta/Documents/chrome_driver/chromedriver.exe");
+        System.setProperty("webdriver.chrome.driver", "C:/Users/kskabort/Documents/chrome_driver/chromedriver.exe");
         Configuration.browser = CHROME;
         Configuration.reopenBrowserOnFail = true;
         Configuration.startMaximized = true;
@@ -136,7 +141,7 @@ public class FirstTest {
         firstPage.closeSub();
 
         //Проверка Автоподгрузки (Проверка в ручном режиме, продолжение в конце)
-        TabActions.PressEscape();
+        //TabActions.PressEscape();
         TabActions.New();
         ArrayList<String> tabs2 = new ArrayList<>(getWebDriver().getWindowHandles()); // Получение списка вкладок
         switchTo().window(tabs2.get(1));// Переключение на вторую вкладку
@@ -150,7 +155,9 @@ public class FirstTest {
         System.out.println(ConsoleColors.GREEN_BOLD_BRIGHT + "PushUp 2 закрыт" + ConsoleColors.RESET);
     }*/
 
-    @Test
+   /**Первая - простейшая проверка Title:*/
+
+   @Test
     //TITLE
     public void test_title() {
         open(SPLIT(Prod.NEWS, "v10"));
@@ -158,52 +165,17 @@ public class FirstTest {
         System.out.println(ConsoleColors.GREEN_BOLD_BRIGHT + "Проверка TITLE успешно завершена" + ConsoleColors.RESET);
     }
 
-    @Test
-    //ПОИСК
-    public void test_search() {
-        open(SPLIT(Staging.NEWS, "v10"));
-        String t = "Путин";
-        staticPageObjects.searchQuery(t);
-        assertEquals(title(), "РБК — новости, акции, курсы валют, доллар, евро"); // проверка error 404
-        String p;
-        for (int i = 1; i <= 5; i++) {
-            p = secondPage.serchQuerys(i);
-            if (!p.contains(t)) {
-                System.out.println(ConsoleColors.RED_BOLD_BRIGHT + "Проверка поиска провалена" + ConsoleColors.RESET);
-                break;
-            }
-        }
-        System.out.println(ConsoleColors.YELLOW_BOLD_BRIGHT + "Проверка ПОИСКА успешно завершена" + ConsoleColors.RESET);
-    }
+    /**
+     * 1) ОБЩИЕ ЭЛЕМЕНТЫ
+     *
+     * Топлайн (+)*/
 
     @Test
-    //ЛЕНТА НОВОСТЕЙ
-    public void test_lenta() {
-
-        int n = 2;
-        //Лента новостей. Часть 1 (Сравнить url ленты новостей с продом)
-        open(SPLIT(Prod.NEWS, "10A"));
-        String lenta_text = staticPageObjects.getLentaUrl(n);
-        open(SPLIT(Staging.NEWS, "10A"));
-        String lenta_text1 = staticPageObjects.getLentaUrl(n);
-        assertEquals(cleanUrl(lenta_text), cleanUrl(lenta_text1));
-        System.out.println(ConsoleColors.YELLOW_BOLD_BRIGHT + "Проверка ЛЕНТЫ НОВОСТЕЙ (Часть 1) успешно завершена" + ConsoleColors.RESET);
-
-        //Лента новостей. Часть 2 (Проверка редиректа)
-        open(SPLIT(Staging.NEWS, "10A"));
-        String lenta_url = staticPageObjects.getLentaUrl(n); // доработать
-        staticPageObjects.clickLenta(n);
-        if (url().contains(cleanUrl(lenta_url)))
-            System.out.println(ConsoleColors.YELLOW_BOLD_BRIGHT + "Проверка ЛЕНТЫ НОВОСТЕЙ (Часть 2) успешно завершена" + ConsoleColors.RESET);
-    }
-
-
-    @Test
-    //ГЛАВНАЯ. ТОПЛАЙН НА rbc.ru
+    //ГЛАВНАЯ. ТОПЛАЙН.
     public void test_topline() throws Exception {
         Actions actions = new Actions(getWebDriver());
         open(SPLIT(Prod.NEWS, "10A"));
-        TabActions.PressEscape();//firstPage.closeOpin();
+        firstPage.closeOpin();/*TabActions.PressEscape();*/
 
         //Проверка эмблемы из топлайна
         actions.keyDown(Keys.LEFT_CONTROL).click(staticPageObjects.toplineLogo).keyUp(Keys.LEFT_CONTROL).build().perform();
@@ -254,7 +226,7 @@ public class FirstTest {
                 assertEquals(mass[i] + "?utm_source=topline", url());
             } catch (ComparisonFailure c) {
                 //if (!url().contains(cleanUrlSimple(mass[i])))
-                    System.out.println(c);
+                System.out.println(c);
             }
             TabActions.Close();
             switchTo().window(tabs.get(1));// Перключение на вторую вкладку
@@ -308,48 +280,51 @@ public class FirstTest {
         System.out.println(ConsoleColors.YELLOW_BOLD_BRIGHT + "Проверка ТОПЛАЙНА успешно завершена" + ConsoleColors.RESET);
     }
 
-       /** for (int i = 4; i<=21; i++)
-        {
-            if (i <= 6)
-                actions.keyDown(Keys.LEFT_CONTROL).click($(".topline__item_important:nth-child(" + Integer.toString(i) + ")"))).keyUp(Keys.LEFT_CONTROL).build().perform();
-            else {
-                if (!$(".topline__item:nth-child(" + Integer.toString(i) + ")")).getAttribute("href").contains(mass[j])) // проверка: содержится ли в проверяемой строке текущая
-                { //Если нет, то проверяется наличие рекламных ссылок:
-                    for (int l = 0; l <len_add; l++)
-                    {
-                        if ($(".topline__item:nth-child(" + Integer.toString(i) + ")")).getAttribute("href").contains(mass_add[l])) // Если рекламная ссылка найдена, то продолжаем с новым индексом на ФО. Если нет, то бъем тревогу
-                            i++;
-                        else {
-                            tabs = new ArrayList<>(driver.getWindowHandles());
-                            if (tabs.size() >= 3) {
-                                for (int tb_i = tabs.size() - 1; tb_i >= 2; tb_i--)// Проверка количества вкладок
-                                {
-                                    driver.switchTo().window(tabs.get(tb_i));// Перключение на последнюю вкладку
-                                    TabActions.Close();
-                                    driver.switchTo().window(tabs.get(tb_i - 1));// Перключение на вторую вкладку
-                                    tabs.remove(tb_i);
-                                }
-                                actions.keyDown(Keys.LEFT_CONTROL).click($(".topline__item:nth-child(" + Integer.toString(i) + ")"))).keyUp(Keys.LEFT_CONTROL).build().perform();
-                                break;
-                            }
-                            else throw new Exception("URL is not from Project or ADD's URL!");}
-                    }
-                }
-                else
-                    actions.keyDown(Keys.LEFT_CONTROL).click($(".topline__item:nth-child(" + Integer.toString(i) + ")"))).keyUp(Keys.LEFT_CONTROL).build().perform();
+    @Test
+    //ПОИСК
+    public void test_search() {
+        open(SPLIT(Staging.NEWS, "v10"));
+        String t = "Путин";
+        firstPage.closeOpin();
+        staticPageObjects.searchQuery(t);
+
+        assertEquals(title(), "РБК — новости, акции, курсы валют, доллар, евро"); // проверка error 404
+        String p;
+        int i;
+        for (i = 1; i <= 5; i++) {
+            p = secondPage.serchQuerys(i);
+            if (!p.contains(t)) {
+                System.out.println(ConsoleColors.RED_BOLD_BRIGHT + "Проверка поиска провалена" + ConsoleColors.RESET);
+                return;
             }
-            tabs = new ArrayList<>(driver.getWindowHandles());
-            driver.switchTo().window(tabs.get(2));// Переключение на третью вкладку
-            try {assertEquals(url(), mass[j]+"?utm_source=topline");}
-            catch (ComparisonFailure c)
-            {System.out.println(c);}
-            TabActions.Close();
-            driver.switchTo().window(tabs.get(1));// Перключение на вторую вкладку
-            tabs.remove(2);
-            j++;
         }
-        System.out.println(ConsoleColors.YELLOW_BOLD_BRIGHT + "Проверка ТОПЛАЙНА успешно завершена" + ConsoleColors.RESET);
-        */
+        System.out.println(ConsoleColors.GREEN_BOLD_BRIGHT + "Проверка ПОИСКА успешно завершена" + ConsoleColors.RESET);
+    }
+
+    /** Лента новостей (+) */
+
+    @Test
+    //ЛЕНТА НОВОСТЕЙ
+    public void test_lenta() {
+
+        int n = 2;
+        //Лента новостей. Часть 1 (Сравнить url ленты новостей с продом)
+        open(SPLIT(Prod.NEWS, "10A"));
+        String lenta_text = staticPageObjects.getLentaUrl(n);
+        open(SPLIT(Staging.NEWS, "10A"));
+        String lenta_text1 = staticPageObjects.getLentaUrl(n);
+        assertEquals(cleanUrl(lenta_text), cleanUrl(lenta_text1));
+        System.out.println(ConsoleColors.YELLOW_BOLD_BRIGHT + "Проверка ЛЕНТЫ НОВОСТЕЙ (Часть 1) успешно завершена" + ConsoleColors.RESET);
+
+        //Лента новостей. Часть 2 (Проверка редиректа)
+        open(SPLIT(Staging.NEWS, "10A"));
+        String lenta_url = staticPageObjects.getLentaUrl(n); // доработать
+        staticPageObjects.clickLenta(n);
+        if (url().contains(cleanUrl(lenta_url)))
+            System.out.println(ConsoleColors.YELLOW_BOLD_BRIGHT + "Проверка ЛЕНТЫ НОВОСТЕЙ (Часть 2) успешно завершена" + ConsoleColors.RESET);
+    }
+
+    /** Прямой эфир (+-) */
 
     @Test
     public void test_online() throws Exception {
