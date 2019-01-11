@@ -12,6 +12,7 @@ package ru.rbc.kskabort.tests;
  *     .perform(); */
 
 import com.codeborne.selenide.SelenideElement;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.interactions.Actions;
@@ -24,24 +25,26 @@ import static com.codeborne.selenide.WebDriverRunner.getWebDriver;
 
 public class TabActions {
 
-    public static void PressEscape()
-    {
-        Actions actions = new Actions(getWebDriver());
-        actions.sendKeys(Keys.ESCAPE).release().build().perform();
-    }
+    private static Actions actions = new Actions(getWebDriver());
 
-    static void New() throws AWTException, InterruptedException
-    {
-        Robot robot = new Robot();
+    public static void PressEscape()
+    {actions.sendKeys(Keys.ESCAPE)
+            .release()
+            .build()
+            .perform();}
+
+    static void New(){
+        ((JavascriptExecutor)getWebDriver()).executeScript("window.open()");
+/*        Robot robot = new Robot();
         robot.keyPress(KeyEvent.VK_CONTROL);
         Thread.sleep(500);
         robot.keyPress(KeyEvent.VK_T);
         Thread.sleep(500);
         robot.keyRelease(KeyEvent.VK_CONTROL);
-        robot.keyRelease(KeyEvent.VK_T);
+        robot.keyRelease(KeyEvent.VK_T);*/
     }
 
-    static void Switch() throws AWTException, InterruptedException
+/*    static void Switch() throws AWTException, InterruptedException
     {
         Robot robot = new Robot();
         robot.keyPress(KeyEvent.VK_CONTROL);
@@ -50,20 +53,21 @@ public class TabActions {
         Thread.sleep(500);
         robot.keyRelease(KeyEvent.VK_CONTROL);
         robot.keyRelease(KeyEvent.VK_TAB);
-    }
+    }*/
 
-    static void Close() throws AWTException, InterruptedException
+    static void Close()/* throws AWTException, InterruptedException*/
     {
-        Robot robot = new Robot();
+        ((JavascriptExecutor)getWebDriver()).executeScript("window.close()");
+/*        Robot robot = new Robot();
         robot.keyPress(KeyEvent.VK_CONTROL);
         Thread.sleep(500);
         robot.keyPress(KeyEvent.VK_F4);
         Thread.sleep(500);
         robot.keyRelease(KeyEvent.VK_CONTROL);
-        robot.keyRelease(KeyEvent.VK_F4);
+        robot.keyRelease(KeyEvent.VK_F4);*/
     }
 
-    static void Open_in_new_tab() throws AWTException, InterruptedException
+/*    static void Open_in_new_tab() throws AWTException, InterruptedException
     {
         Robot robot = new Robot();
         robot.keyPress(KeyEvent.VK_CONTROL);
@@ -72,7 +76,7 @@ public class TabActions {
         Thread.sleep(500);
         robot.keyRelease(KeyEvent.VK_ENTER);
         robot.keyRelease(KeyEvent.VK_CONTROL);
-    }
+    }*/
 
     static void Mose_move(SelenideElement elem) throws AWTException {
         Robot robot = new Robot();

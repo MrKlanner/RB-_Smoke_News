@@ -6,10 +6,7 @@ import com.codeborne.selenide.SelenideDriver;
 import com.codeborne.selenide.SelenideElement;
 import com.codeborne.selenide.ex.ElementShould;
 import junit.framework.AssertionFailedError;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.ComparisonFailure;
-import org.junit.Test;
+import org.junit.*;
 import org.openqa.selenium.ElementNotVisibleException;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.NoSuchElementException;
@@ -29,8 +26,7 @@ import java.util.ArrayList;
 import static com.codeborne.selenide.Browsers.CHROME;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.*;
-import static com.codeborne.selenide.WebDriverRunner.getWebDriver;
-import static com.codeborne.selenide.WebDriverRunner.url;
+import static com.codeborne.selenide.WebDriverRunner.*;
 import static org.junit.Assert.assertEquals;
 import static ru.rbc.kskabort.pages.URLs.SPLIT;
 
@@ -111,7 +107,7 @@ public class FirstTest {
         System.setProperty("webdriver.chrome.driver", "C:/Users/kskabort/Documents/chrome_driver/chromedriver.exe");
         Configuration.browser = CHROME;
         Configuration.reopenBrowserOnFail = true;
-        Configuration.startMaximized = true;
+        //Configuration.startMaximized = true;
         //Configuration.baseUrl = SPLIT(Prod.NEWS, "10A");
         /*Для режима инкогнито
         ChromeOptions options = new ChromeOptions();
@@ -130,6 +126,9 @@ public class FirstTest {
 
         System.out.println(ConsoleColors.RED_BOLD_BRIGHT + "-----------------------------------------------------------" + ConsoleColors.RESET);
 
+        open("");
+        getWebDriver().manage().window().maximize();
+
         open(SPLIT(Prod.NEWS, "10A"));
 
         firstPage = new FirstPage();
@@ -142,18 +141,19 @@ public class FirstTest {
 
         //Проверка Автоподгрузки (Проверка в ручном режиме, продолжение в конце)
         //TabActions.PressEscape();
-        TabActions.New();
-        ArrayList<String> tabs2 = new ArrayList<>(getWebDriver().getWindowHandles()); // Получение списка вкладок
-        switchTo().window(tabs2.get(1));// Переключение на вторую вкладку
+        // Переключение на вторую вкладку
         //open(SPLIT(Prod.NEWS, "10A"));
     }
 
-   /* @Before
+   @Before
     public void setup_before()
     {
-        firstPage.closeSub();
-        System.out.println(ConsoleColors.GREEN_BOLD_BRIGHT + "PushUp 2 закрыт" + ConsoleColors.RESET);
-    }*/
+        TabActions.New();
+        ArrayList<String> tabs2 = new ArrayList<>(getWebDriver().getWindowHandles()); // Получение списка вкладок
+        switchTo().window(tabs2.get(1));
+        /*firstPage.closeSub();
+        System.out.println(ConsoleColors.GREEN_BOLD_BRIGHT + "PushUp 2 закрыт" + ConsoleColors.RESET);*/
+    }
 
    /**Первая - простейшая проверка Title:*/
 
@@ -288,7 +288,7 @@ public class FirstTest {
         firstPage.closeOpin();
         staticPageObjects.searchQuery(t);
 
-        assertEquals(title(), "РБК — новости, акции, курсы валют, доллар, евро"); // проверка error 404
+        test_title();// проверка error 404
         String p;
         int i;
         for (i = 1; i <= 5; i++) {
@@ -384,6 +384,16 @@ public class FirstTest {
         $(".vjs-big-play-button").click();sleep(1000);
         $(".vjs-fullscreen-control").click(); //Выход из фуллскрина
         */
+    }
+
+    @Test
+    public void test_second_pages ()
+    {
+        for (String i : secondPage.getSecondPagesUrls("test"))
+        {
+            open(i);
+            test_title(); // проверка error 404
+        }
     }
 
     @AfterClass()
