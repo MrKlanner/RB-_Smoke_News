@@ -18,9 +18,9 @@ import org.openqa.selenium.Point;
 import org.openqa.selenium.interactions.Actions;
 
 import java.awt.*;
-import java.awt.event.KeyEvent;
 
 import static com.codeborne.selenide.Selenide.$;
+import static com.codeborne.selenide.Selenide.sleep;
 import static com.codeborne.selenide.WebDriverRunner.getWebDriver;
 
 public class TabActions {
@@ -34,7 +34,9 @@ public class TabActions {
             .perform();}
 
     static void New(){
+        sleep(500);
         ((JavascriptExecutor)getWebDriver()).executeScript("window.open()");
+        sleep(500);
 /*        Robot robot = new Robot();
         robot.keyPress(KeyEvent.VK_CONTROL);
         Thread.sleep(500);
@@ -57,7 +59,9 @@ public class TabActions {
 
     static void Close()/* throws AWTException, InterruptedException*/
     {
+        sleep(500);
         ((JavascriptExecutor)getWebDriver()).executeScript("window.close()");
+        sleep(500);
 /*        Robot robot = new Robot();
         robot.keyPress(KeyEvent.VK_CONTROL);
         Thread.sleep(500);

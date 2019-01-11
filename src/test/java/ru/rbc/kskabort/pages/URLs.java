@@ -158,6 +158,30 @@ public class URLs {
             static String research = "";
             static String insert_in_table = "";
         }
+
+        static class prod {
+            static String spec = "https://sberbank.rbc.ru/specials/15/05/2018/5afaae5f9a794701738fe64b";
+            static String article = "https://www.rbc.ru/politics/11/01/2019/5c38e5ef9a794767be67f293";
+            static String opin = "https://www.rbc.ru/opinions/technology_and_media/12/11/2018/5be56d069a7947bf2702bdd9";
+            static String photorep = "https://www.rbc.ru/photoreport/10/01/2019/5c376eb69a7947834e2c490b";
+            static String black_gallary = "https://www.rbc.ru/photoreport/31/12/2018/5c052e2c9a7947ca71d961b6";
+            //static String infografic = "";
+            static String videogallary = "https://www.rbc.ru/own_business/28/12/2018/5c20b45c9a7947be4c01817a"; //"https://www.rbc.ru/society/01/01/2019/5c24b24f9a794787f38c2812"
+            static String online = "https://www.rbc.ru/textonlines/01/07/2018/5b39063d9a7947438d60e7ef";
+            static String rating = "https://www.rbc.ru/ratings/politics/22/08/2018/5b7d1df59a794775adbe5b05";
+            static String investigation = "https://www.rbc.ru/investigation/business/25/05/2018/5b0831529a794723e65622dd?story=5af980859a7947b069a0a9d3";
+            /*static String article_of_combined_redaction = "";
+            static String short_news = "";*/
+            static String interview = "https://www.rbc.ru/interview/politics/10/01/2019/5c35bef19a794700cd1694fd";
+            static String research = "https://www.rbc.ru/research/business/12/03/2018/5a71cf5e9a79477ec21bb259";
+            /*static String insert_in_table = "";*/
+            // Вставка черного фоторепортажа - https://www.rbc.ru/rbcfreenews/5c38ecaa9a79476937ae9a4a
+            // Вставка материала https://www.rbc.ru/rbcfreenews/5ba45dd79a79473a8d81d501
+            // Вставка фотослайдера https://www.rbc.ru/politics/06/07/2018/5b3f40f59a7947438a0457ed
+            // Вставка блока https://sberbank.rbc.ru/specials/15/05/2018/5afaae5f9a794701738fe64b
+            // Вставка твиттера https://www.rbc.ru/politics/22/06/2018/5b2d5b839a794722504a18f5
+            // Инфографика (?) https://www.rbc.ru/politics/14/04/2018/5ad0ef219a79470dbf5fa038
+        }
     }
 }
     /*    else if (param.equals("tolpine_add")) {

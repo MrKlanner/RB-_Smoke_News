@@ -1,16 +1,11 @@
 package ru.rbc.kskabort.pages;
 
 import com.codeborne.selenide.Condition;
-import com.codeborne.selenide.Selenide;
-import com.codeborne.selenide.SelenideDriver;
 import com.codeborne.selenide.SelenideElement;
-import org.openqa.selenium.Keys;
 import ru.rbc.kskabort.ConsoleColors;
 import ru.rbc.kskabort.tests.TabActions;
 
-import java.security.Key;
-
-import static com.codeborne.selenide.Selenide.*;
+import static com.codeborne.selenide.Selenide.$;
 
 public class FirstPage {
 
@@ -19,7 +14,7 @@ public class FirstPage {
     }
 
     private SelenideElement CloseSubPushupButton = $(".push-allow__button_no");
-    private SelenideElement CloseOpinionPushupButton = $(".dcfdddaf-close");
+    //private SelenideElement CloseOpinionPushupButton = $(".dcfdddaf-close");
     /*SelenideElement SubPushup;*/
     /*@FindBy(css = ".push-allow__button_no")
     public SelenideElement SubPushup;*/

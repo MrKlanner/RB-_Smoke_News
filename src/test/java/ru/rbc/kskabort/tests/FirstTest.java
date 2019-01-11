@@ -1,15 +1,9 @@
 package ru.rbc.kskabort.tests;
 
 import com.codeborne.selenide.Configuration;
-import com.codeborne.selenide.Selenide;
-import com.codeborne.selenide.SelenideDriver;
 import com.codeborne.selenide.SelenideElement;
-import com.codeborne.selenide.ex.ElementShould;
-import junit.framework.AssertionFailedError;
 import org.junit.*;
-import org.openqa.selenium.ElementNotVisibleException;
 import org.openqa.selenium.Keys;
-import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.interactions.Actions;
 import ru.rbc.kskabort.ConsoleColors;
@@ -20,14 +14,15 @@ import ru.rbc.kskabort.pages.URLs;
 import ru.rbc.kskabort.pages.URLs.Prod;
 import ru.rbc.kskabort.pages.URLs.Staging;
 
-import java.awt.*;
 import java.util.ArrayList;
 
 import static com.codeborne.selenide.Browsers.CHROME;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.*;
-import static com.codeborne.selenide.WebDriverRunner.*;
+import static com.codeborne.selenide.WebDriverRunner.getWebDriver;
+import static com.codeborne.selenide.WebDriverRunner.url;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static ru.rbc.kskabort.pages.URLs.SPLIT;
 
 /*import org.openqa.selenium.*;
@@ -47,9 +42,9 @@ import org.openqa.selenium.WebElement;*/
  * СМОК:**/
 public class FirstTest {
 
-    public static FirstPage firstPage;
-    public static SecondPage secondPage;
-    public static StaticPageObjects staticPageObjects;
+    private static FirstPage firstPage;
+    private static SecondPage secondPage;
+    private static StaticPageObjects staticPageObjects;
 
     /*private static WebDriver driver;*/
     //private StringBuffer verificationErrors = new StringBuffer();
@@ -103,8 +98,9 @@ public class FirstTest {
      * Проверить ссылки из подвала
      * */
     @BeforeClass
-    public static void setup() throws InterruptedException, AWTException {
-        System.setProperty("webdriver.chrome.driver", "C:/Users/kskabort/Documents/chrome_driver/chromedriver.exe");
+    public static void setup()
+    {
+        System.setProperty("webdriver.chrome.driver", "C:/Users/Kosta/Documents/chrome_driver/chromedriver.exe");
         Configuration.browser = CHROME;
         Configuration.reopenBrowserOnFail = true;
         //Configuration.startMaximized = true;
@@ -129,7 +125,11 @@ public class FirstTest {
         open("");
         getWebDriver().manage().window().maximize();
 
-        open(SPLIT(Prod.NEWS, "10A"));
+        try {open(SPLIT(Prod.NEWS, "10A"));}
+        catch (TimeoutException e)
+        {
+            TabActions.PressEscape();
+        }
 
         firstPage = new FirstPage();
         secondPage = new SecondPage();
@@ -160,7 +160,7 @@ public class FirstTest {
    @Test
     //TITLE
     public void test_title() {
-        open(SPLIT(Prod.NEWS, "v10"));
+        //open(SPLIT(Prod.NEWS, "v10"));
         assertEquals(title(), "РБК — новости, акции, курсы валют, доллар, евро");
         System.out.println(ConsoleColors.GREEN_BOLD_BRIGHT + "Проверка TITLE успешно завершена" + ConsoleColors.RESET);
     }
@@ -172,7 +172,7 @@ public class FirstTest {
 
     @Test
     //ГЛАВНАЯ. ТОПЛАЙН.
-    public void test_topline() throws Exception {
+    public void test_topline() {
         Actions actions = new Actions(getWebDriver());
         open(SPLIT(Prod.NEWS, "10A"));
         firstPage.closeOpin();/*TabActions.PressEscape();*/
@@ -190,7 +190,7 @@ public class FirstTest {
         String[] mass = URLs.Mass.topline; // Получение всех возможных ссылок на проекты в топлайне
         String[] mass_add = URLs.Mass.top_add; // Получение всех возможных рекламных ссылок в топлайне
         int len_add = (mass_add).length;
-        int j = 0;
+        //int j = 0;
 
         final int MAX_INDEX_TOP = 17;
         final int MAX_INDEX_TOP_ADD = 2;
@@ -203,7 +203,7 @@ public class FirstTest {
                 max_index_c++;
             else {
                 max_index_c = i - 1;
-                throw new Error("Количество ссылок в топлайне = " + Integer.toString(max_index_c));
+                throw new Error("Количество ссылок в топлайне = ".concat(Integer.toString(max_index_c)));
             }
         }
         //Проверка количества рекламных ссылок в топлайне
@@ -212,7 +212,7 @@ public class FirstTest {
                 max_index_add++;
             else {
                 max_index_add = i - 1;
-                throw new Error("Количество рекламных ссылок = " + Integer.toString(max_index_add));
+                throw new Error("Количество рекламных ссылок = ".concat(Integer.toString(max_index_add)));
             }
         }
 
@@ -228,6 +228,7 @@ public class FirstTest {
                 //if (!url().contains(cleanUrlSimple(mass[i])))
                 System.out.println(c);
             }
+            /*sleep(500);*/
             TabActions.Close();
             switchTo().window(tabs.get(1));// Перключение на вторую вкладку
             tabs.remove(2);
@@ -327,10 +328,9 @@ public class FirstTest {
     /** Прямой эфир (+-) */
 
     @Test
-    public void test_online() throws Exception {
+    public void test_online() {
         open(SPLIT(Prod.NEWS, "10A"));
         TabActions.PressEscape();
-        Actions actions = new Actions(getWebDriver());
         /*try {open(SPLIT(Prod.NEWS, "10A"));}
         catch (TimeoutException ingore)
         {actions.sendKeys(Keys.ESCAPE);}*/
@@ -389,10 +389,11 @@ public class FirstTest {
     @Test
     public void test_second_pages ()
     {
-        for (String i : secondPage.getSecondPagesUrls("test"))
+        for (String i : secondPage.getSecondPagesUrls("prod"))
         {
             open(i);
-            test_title(); // проверка error 404
+            assertTrue(ConsoleColors.RED_BOLD_BRIGHT + "Страница недоступна!\nТайтл страницы: " + title()
+                    + ConsoleColors.RESET, title().contains("РБК") && !title().contains("404"));
         }
     }
 
@@ -411,13 +412,13 @@ public class FirstTest {
         else return SPLIT(URLs.Test.NEWS_REGULAR, "v10");
     }*/
 
-    private void closeFull () {
+/*    private void closeFull () {
         try {
             if ($("body > div.news #closeButton").isEnabled()) //body > div.news #closeButton_1239
                 $("body > div.news #closeButton").click();}
         catch (NoSuchElementException ignore) {
         }
-    }
+    }*/
 
     private String cleanUrl (String lnk)
     {
@@ -434,7 +435,7 @@ public class FirstTest {
                 return lnk.substring(15);
             for (int i=1; i <= 4; i++)
             {
-                if (lnk.contains(".test" + Integer.toString(i) + '.'))
+                if (lnk.contains(".test".concat(Integer.toString(i)) + ('.')))
                         return lnk.substring(13);
             }
             return lnk.substring(12);
@@ -447,7 +448,7 @@ public class FirstTest {
         for (int i = 0; i < lnk.length(); i++) {
             if (lnk.toCharArray()[i] == '/' && k < 3)
                 k++;
-            else {k=i; break;};
+            else {k=i; break;}
         }
         return lnk.substring(0, k);
     }
@@ -457,44 +458,3 @@ public class FirstTest {
     }
 
 }
-   /* public void CloseFullscreen()
-    {
-        NotEmpty(driver.findElement())
-    }*/
-    /*
-    private boolean isElementPresent(By by) {
-        try {
-            driver.findElement(by);
-            return true;
-        } catch (NoSuchElementException e) {
-            return false;
-        }
-    }
-
-    private boolean isAlertPresent() {
-        try {
-
-            switchTo().alert();
-            return true;
-        } catch (NoAlertPresentException e) {
-            return false;
-        }
-    }
-
-    private String closeAlertAndGetItsText() {
-        try {
-            Alert alert =
-            switchTo().alert();
-            String alertText = alert.getText();
-            if (acceptNextAlert) {
-                alert.accept();
-            } else {
-                alert.dismiss();
-            }
-            return alertText;
-        } finally {
-            acceptNextAlert = true;
-        }
-    }
-    */
-
