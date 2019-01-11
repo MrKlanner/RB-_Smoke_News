@@ -146,8 +146,7 @@ public class FirstTest {
     }
 
    @Before
-    public void setup_before()
-    {
+    public void setup_before() throws InterruptedException {
         TabActions.New();
         ArrayList<String> tabs2 = new ArrayList<>(getWebDriver().getWindowHandles()); // Получение списка вкладок
         switchTo().window(tabs2.get(1));
@@ -172,7 +171,7 @@ public class FirstTest {
 
     @Test
     //ГЛАВНАЯ. ТОПЛАЙН.
-    public void test_topline() {
+    public void test_topline() throws InterruptedException {
         Actions actions = new Actions(getWebDriver());
         open(SPLIT(Prod.NEWS, "10A"));
         firstPage.closeOpin();/*TabActions.PressEscape();*/
@@ -216,6 +215,7 @@ public class FirstTest {
             }
         }
 
+        boolean allUrlsIsCorrect = true;
         //Проверка ссылок на проекты в топлайне
         for (int i = 0; i < MAX_INDEX_TOP; i++) {
             actions.keyDown(Keys.LEFT_CONTROL).click(staticPageObjects.getTopItem(i, "common", MAX_INDEX_TOP, MAX_INDEX_TOP_ADD)).keyUp(Keys.LEFT_CONTROL).build().perform();
@@ -227,6 +227,7 @@ public class FirstTest {
             } catch (ComparisonFailure c) {
                 //if (!url().contains(cleanUrlSimple(mass[i])))
                 System.out.println(c);
+                allUrlsIsCorrect = false;
             }
             /*sleep(500);*/
             TabActions.Close();
@@ -260,6 +261,7 @@ public class FirstTest {
                     } catch (ComparisonFailure c) {
                         //if (!url().contains(cleanUrlSimple(mass[i])))
                         System.out.println(c);
+                        allUrlsIsCorrect = false;
                     }
                     break;
                 }
@@ -278,7 +280,8 @@ public class FirstTest {
                 }
             }
         }
-        System.out.println(ConsoleColors.YELLOW_BOLD_BRIGHT + "Проверка ТОПЛАЙНА успешно завершена" + ConsoleColors.RESET);
+        if (allUrlsIsCorrect) System.out.println(ConsoleColors.YELLOW_BOLD_BRIGHT + "Проверка ТОПЛАЙНА успешно завершена!" + ConsoleColors.RESET);
+        else throw new Error ("Проверка ТОПЛАЙНА провалена!");
     }
 
     @Test

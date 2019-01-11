@@ -12,20 +12,28 @@ package ru.rbc.kskabort.tests;
  *     .perform(); */
 
 import com.codeborne.selenide.SelenideElement;
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.interactions.Actions;
 
 import java.awt.*;
+import java.awt.event.KeyEvent;
 
 import static com.codeborne.selenide.Selenide.$;
-import static com.codeborne.selenide.Selenide.sleep;
 import static com.codeborne.selenide.WebDriverRunner.getWebDriver;
 
 public class TabActions {
 
     private static Actions actions = new Actions(getWebDriver());
+    private static Robot robot;
+
+    static {
+        try {
+            robot = new Robot();
+        } catch (AWTException e) {
+            e.printStackTrace();
+        }
+    }
 
     public static void PressEscape()
     {actions.sendKeys(Keys.ESCAPE)
@@ -33,17 +41,17 @@ public class TabActions {
             .build()
             .perform();}
 
-    static void New(){
-        sleep(500);
+    static void New() throws InterruptedException {
+        /*actions.keyDown(Keys.CONTROL).sendKeys("t").keyUp(Keys.CONTROL).perform();*/
+        /*sleep(500);
         ((JavascriptExecutor)getWebDriver()).executeScript("window.open()");
-        sleep(500);
-/*        Robot robot = new Robot();
+        sleep(500);*/
         robot.keyPress(KeyEvent.VK_CONTROL);
         Thread.sleep(500);
         robot.keyPress(KeyEvent.VK_T);
         Thread.sleep(500);
         robot.keyRelease(KeyEvent.VK_CONTROL);
-        robot.keyRelease(KeyEvent.VK_T);*/
+        robot.keyRelease(KeyEvent.VK_T);
     }
 
 /*    static void Switch() throws AWTException, InterruptedException
@@ -57,18 +65,16 @@ public class TabActions {
         robot.keyRelease(KeyEvent.VK_TAB);
     }*/
 
-    static void Close()/* throws AWTException, InterruptedException*/
+    static void Close() throws InterruptedException
     {
-        sleep(500);
-        ((JavascriptExecutor)getWebDriver()).executeScript("window.close()");
-        sleep(500);
-/*        Robot robot = new Robot();
+        //(JavascriptExecutor)getWebDriver()).executeScript("window.close()");
+        //sleep(500);
         robot.keyPress(KeyEvent.VK_CONTROL);
         Thread.sleep(500);
         robot.keyPress(KeyEvent.VK_F4);
         Thread.sleep(500);
         robot.keyRelease(KeyEvent.VK_CONTROL);
-        robot.keyRelease(KeyEvent.VK_F4);*/
+        robot.keyRelease(KeyEvent.VK_F4);
     }
 
 /*    static void Open_in_new_tab() throws AWTException, InterruptedException
