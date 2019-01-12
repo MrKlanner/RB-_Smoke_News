@@ -53,16 +53,16 @@ public class FirstTest {
     public static StaticPageObjects staticPageObjects;*/
 /*    private final String site = TestSite();*/
 
-
-     /**
+    /**
+     * 1. Общие элементы
      *
-     *
-     *
-     *
-     * Ключевые индикаторы (
-     * Подвал
-     *
-     *
+     * Единый топлайн (прокликивание ссылок)
+     * Прямой эфир (перетыкать все переключатели)
+     * Логика отображения данных в карточках на проекте rbc.ru (Порядок как в публикаторе главное (?))
+     * Лента новостей (Редирект + 404)
+     * Ключевые индикаторы (Проверка значений)
+     * Подвал (Наличие ссылок + всех блоков)
+     * --------------------------
      *
      * 2. Главная страница
      *
@@ -71,14 +71,12 @@ public class FirstTest {
      * Блок Центральная колонка
      *
      * Бесконечная главная
-     * Спецблок Истории (?)
      * Блок Опросы
      * Главные страницы регионов
      * Блок Подписка на рассылку:
      * - Подтверждение подписки из письма
      * - Отписка от рассылки
-     *
-     *
+     * ---------------------------
      *
      * 3. Логика формирования новостей на главной (Типы пользователей)
      *
@@ -88,15 +86,16 @@ public class FirstTest {
      * При закрытии и открытии браузера как "Новый пользователей" продолжает отображаться "Главное за сутки".
      *
      * Старые пользовтели. Если удалить куку main-short отображается блок "Главное".
-     *
-     *
+     * ----------------------------
      *
      * 4.Страница с удаленным текстом по решению суда
      * Открыть страницу и проверить, что ничего не разъехалось
+     * -----------------------------
      *
      * 5. Статичные страницы
-     * Проверить ссылки из подвала
-     * */
+     * Проверить ссылки из подвала (Прокликивание ссылок)
+     **/
+
     @BeforeClass
     public static void setup()
     {
@@ -149,7 +148,7 @@ public class FirstTest {
     public void setup_before() throws InterruptedException {
         TabActions.New();
         ArrayList<String> tabs2 = new ArrayList<>(getWebDriver().getWindowHandles()); // Получение списка вкладок
-        switchTo().window(tabs2.get(1));
+        switchTo().window(tabs2.get(tabs2.size()-1));
         /*firstPage.closeSub();
         System.out.println(ConsoleColors.GREEN_BOLD_BRIGHT + "PushUp 2 закрыт" + ConsoleColors.RESET);*/
     }
@@ -298,8 +297,7 @@ public class FirstTest {
         for (i = 1; i <= 5; i++) {
             p = secondPage.serchQuerys(i);
             if (!p.contains(t)) {
-                System.out.println(ConsoleColors.RED_BOLD_BRIGHT + "Проверка поиска провалена" + ConsoleColors.RESET);
-                return;
+                throw new Error ("Проверка поиска провалена!");
             }
         }
         System.out.println(ConsoleColors.GREEN_BOLD_BRIGHT + "Проверка ПОИСКА успешно завершена" + ConsoleColors.RESET);
@@ -409,10 +407,10 @@ public class FirstTest {
 /*    private String TestSite()
     {
         String res;
-        System.out.println("Введите тестируемую площадку.\n Если staging, то <s>, если test то <t>");
+        System.out.println("Введите тестируемую площадку:\n Если Production = [p]\nStaging = [s]\nTest = [t]");
         String p = System.console().readLine();
         if (p.equals("s")) return SPLIT(Staging.NEWS, "v10");
-        else return SPLIT(URLs.Test.NEWS_REGULAR, "v10");
+        else return SPLIT( URLs.Test.NEWS_REGULAR, "v10");
     }*/
 
 /*    private void closeFull () {

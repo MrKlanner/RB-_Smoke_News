@@ -60,29 +60,29 @@ public class URLs {
 
     }
 
-    private class Test{
-        private static final String NEWS_REGULAR = "https://test.rbc.ru/";
-        private static final String NEWS_2 = "https://test2.rbc.ru/";
-        private static final String NEWS_3 = "https://test3.rbc.ru/";
+    public class Test{
+        public static final String NEWS_REGULAR = "https://test.rbc.ru/";
+        public static final String NEWS_2 = "https://test2.rbc.ru/";
+        public static final String NEWS_3 = "https://test3.rbc.ru/";
 
-        private static final String AUTO = "https://test.autonews.ru/";
-        private static final String TV = "http://test.v4.tv.rbc.ru/";
-        private static final String STYLE = "https://test.v4.style.rbc.ru/";
-        private static final String PINK = "https://test.v1.pink.rbc.ru/";
-        private static final String NEWSPAPER = "https://test.rbc.ru/newspaper/";
-        private static final String MAGAZINE = "https://test.rbc.ru/magazine/";
-        private static final String CRYPTO = "https://test.rbc.ru/crypto/"; // !!
-        private static final String SPORT = "https://test.sport.rbc.ru/";
-        private static final String REALTY = "https://test.v4.realty.rbc.ru/";
-        private static final String QUOTE = "https://test.v4.quote.rbc.ru/";
-        private static final String MARKETING = "https://test.v4.marketing.rbc.ru/";
-        private static final String RBC500 = "https://test.rbc.ru/rbc500//";
-        private static final String AWARDS = "https://test.rbc.ru/awards/";
-        private static final String AWARDS_SPB = "https://test.rbc.ru/awards_spb/";
-        private static final String RNV = "http://test.v5.cash.rbc.ru/";
-        private static final String RBCPLUS = "http://test.v2.rbcplus.ru/";
-        private static final String PRO = "https://test.pro.rbc.ru/";// !!
-        private static final String BC = "https://test.bc.rbc.ru/"; // !!
+        public static final String AUTO = "https://test.autonews.ru/";
+        public static final String TV = "http://test.v4.tv.rbc.ru/";
+        public static final String STYLE = "https://test.v4.style.rbc.ru/";
+        public static final String PINK = "https://test.v1.pink.rbc.ru/";
+        public static final String NEWSPAPER = "https://test.rbc.ru/newspaper/";
+        public static final String MAGAZINE = "https://test.rbc.ru/magazine/";
+        public static final String CRYPTO = "https://test.rbc.ru/crypto/"; // !!
+        public static final String SPORT = "https://test.sport.rbc.ru/";
+        public static final String REALTY = "https://test.v4.realty.rbc.ru/";
+        public static final String QUOTE = "https://test.v4.quote.rbc.ru/";
+        public static final String MARKETING = "https://test.v4.marketing.rbc.ru/";
+        public static final String RBC500 = "https://test.rbc.ru/rbc500//";
+        public static final String AWARDS = "https://test.rbc.ru/awards/";
+        public static final String AWARDS_SPB = "https://test.rbc.ru/awards_spb/";
+        public static final String RNV = "http://test.v5.cash.rbc.ru/";
+        public static final String RBCPLUS = "http://test.v2.rbcplus.ru/";
+        public static final String PRO = "https://test.pro.rbc.ru/";// !!
+        public static final String BC = "https://test.bc.rbc.ru/"; // !!
     }
 
     private class Other{
