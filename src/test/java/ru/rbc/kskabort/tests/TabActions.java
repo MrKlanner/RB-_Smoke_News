@@ -24,6 +24,7 @@ import static com.codeborne.selenide.WebDriverRunner.getWebDriver;
 
 public class TabActions {
 
+/*
     private static Actions actions = new Actions(getWebDriver());
     private static Robot robot;
 
@@ -34,14 +35,20 @@ public class TabActions {
             e.printStackTrace();
         }
     }
+*/
 
-    public static void PressEscape()
-    {actions.sendKeys(Keys.ESCAPE)
-            .release()
-            .build()
-            .perform();}
+    public static void PressEscape() {
+        Actions actions = new Actions(getWebDriver());
+        {
+            actions.sendKeys(Keys.ESCAPE)
+                    .release()
+                    .build()
+                    .perform();
+        }
+    }
 
-    static void New() throws InterruptedException {
+    static void New() throws InterruptedException, AWTException {
+        Robot robot = new Robot();
         /*actions.keyDown(Keys.CONTROL).sendKeys("t").keyUp(Keys.CONTROL).perform();*/
         /*sleep(500);
         ((JavascriptExecutor)getWebDriver()).executeScript("window.open()");
@@ -65,8 +72,8 @@ public class TabActions {
         robot.keyRelease(KeyEvent.VK_TAB);
     }*/
 
-    static void Close() throws InterruptedException
-    {
+    static void Close() throws InterruptedException, AWTException {
+        Robot robot = new Robot();
         //(JavascriptExecutor)getWebDriver()).executeScript("window.close()");
         //sleep(500);
         robot.keyPress(KeyEvent.VK_CONTROL);

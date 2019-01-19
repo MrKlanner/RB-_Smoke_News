@@ -2,10 +2,14 @@ package ru.rbc.kskabort.tests;
 
 import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.SelenideElement;
-import org.junit.*;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.interactions.Actions;
+import org.testng.Assert;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeSuite;
+import org.testng.annotations.BeforeTest;
+import org.testng.annotations.Test;
 import ru.rbc.kskabort.ConsoleColors;
 import ru.rbc.kskabort.pages.FirstPage;
 import ru.rbc.kskabort.pages.SecondPage;
@@ -14,16 +18,19 @@ import ru.rbc.kskabort.pages.URLs;
 import ru.rbc.kskabort.pages.URLs.Prod;
 import ru.rbc.kskabort.pages.URLs.Staging;
 
+import java.awt.*;
 import java.util.ArrayList;
 
 import static com.codeborne.selenide.Browsers.CHROME;
-import static com.codeborne.selenide.Condition.visible;
+import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selenide.*;
 import static com.codeborne.selenide.WebDriverRunner.getWebDriver;
 import static com.codeborne.selenide.WebDriverRunner.url;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static ru.rbc.kskabort.pages.URLs.SPLIT;
+
+//import static org.junit.Assert.assertEquals;
+
+//import org.junit.*;
 
 /*import org.openqa.selenium.*;
 /*import org.openqa.selenium.chrome.ChromeDriver;*/
@@ -40,7 +47,8 @@ import org.openqa.selenium.WebElement;*/
  *
  *
  * СМОК:**/
-public class FirstTest {
+
+public class FirstTest extends Assert {
 
     private static FirstPage firstPage;
     private static SecondPage secondPage;
@@ -96,7 +104,7 @@ public class FirstTest {
      * Проверить ссылки из подвала (Прокликивание ссылок)
      **/
 
-    @BeforeClass
+    @BeforeSuite (description = "setup", alwaysRun = true)
     public static void setup()
     {
         System.setProperty("webdriver.chrome.driver", "C:/Users/Kosta/Documents/chrome_driver/chromedriver.exe");
@@ -144,8 +152,9 @@ public class FirstTest {
         //open(SPLIT(Prod.NEWS, "10A"));
     }
 
-   @Before
-    public void setup_before() throws InterruptedException {
+
+   @BeforeTest (description = "Create new tab", alwaysRun = true)
+    public void setup_before() throws InterruptedException, AWTException {
         TabActions.New();
         ArrayList<String> tabs2 = new ArrayList<>(getWebDriver().getWindowHandles()); // Получение списка вкладок
         switchTo().window(tabs2.get(tabs2.size()-1));
@@ -155,10 +164,9 @@ public class FirstTest {
 
    /**Первая - простейшая проверка Title:*/
 
-   @Test
-    //TITLE
+   @Test (description = "Title")
     public void test_title() {
-        //open(SPLIT(Prod.NEWS, "v10"));
+        open(SPLIT(Prod.NEWS, "v10"));
         assertEquals(title(), "РБК — новости, акции, курсы валют, доллар, евро");
         System.out.println(ConsoleColors.GREEN_BOLD_BRIGHT + "Проверка TITLE успешно завершена" + ConsoleColors.RESET);
     }
@@ -168,9 +176,9 @@ public class FirstTest {
      *
      * Топлайн (+)*/
 
-    @Test
+    @Test (description = "Topline links")
     //ГЛАВНАЯ. ТОПЛАЙН.
-    public void test_topline() throws InterruptedException {
+    public void test_topline() throws InterruptedException, AWTException {
         Actions actions = new Actions(getWebDriver());
         open(SPLIT(Prod.NEWS, "10A"));
         firstPage.closeOpin();/*TabActions.PressEscape();*/
@@ -223,7 +231,7 @@ public class FirstTest {
             switchTo().window(tabs.get(2));// Переключение на третью вкладку
             try {
                 assertEquals(mass[i] + "?utm_source=topline", url());
-            } catch (ComparisonFailure c) {
+            } catch (AssertionError c) {
                 //if (!url().contains(cleanUrlSimple(mass[i])))
                 System.out.println(c);
                 allUrlsIsCorrect = false;
@@ -257,7 +265,7 @@ public class FirstTest {
                 if (url().contains(mass_add[k])) {
                     try {
                         assertEquals(mass_add[k], url());
-                    } catch (ComparisonFailure c) {
+                    } catch (AssertionError c) {
                         //if (!url().contains(cleanUrlSimple(mass[i])))
                         System.out.println(c);
                         allUrlsIsCorrect = false;
@@ -393,8 +401,8 @@ public class FirstTest {
         for (String i : secondPage.getSecondPagesUrls("prod"))
         {
             open(i);
-            assertTrue(ConsoleColors.RED_BOLD_BRIGHT + "Страница недоступна!\nТайтл страницы: " + title()
-                    + ConsoleColors.RESET, title().contains("РБК") && !title().contains("404"));
+            assertFalse(title().contains("РБК") && !title().contains("404"),ConsoleColors.RED_BOLD_BRIGHT + "Страница недоступна!\nТайтл страницы: " + title()
+                    + ConsoleColors.RESET);
         }
     }
 
