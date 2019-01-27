@@ -6,6 +6,7 @@ import org.openqa.selenium.interactions.Actions;
 import ru.rbc.kskabort.ConsoleColors;
 
 import static com.codeborne.selenide.Selenide.$;
+import static com.codeborne.selenide.Selenide.$$;
 import static com.codeborne.selenide.Selenide.sleep;
 import static com.codeborne.selenide.WebDriverRunner.getWebDriver;
 
@@ -94,12 +95,15 @@ public class StaticPageObjects {
     }
 
     public String getLentaUrl( int i) {
-        if (i != 4)
-            return $(".news-feed__item:nth-child(".concat(Integer.toString(i)) + ")").attr("href");
+        if (i != 4 && i !=16 && i != 28 && i != 40 && i != 52 && i != 64)
+/*            return $(".news-feed__item:nth-child(".concat(Integer.toString(i)) + ")").attr("href");
+        if (i%5 == 0)*/
+            return $(".news-feed__item:nth-child(".concat(Integer.toString(i)) + ")").scrollTo().attr("href");
         else return new Error(ConsoleColors.RED_BOLD + "No such lenta element"+ ConsoleColors.RESET).getMessage();
     }
     public void clickLenta( int i) {
-        $(".news-feed__item:nth-child(".concat(Integer.toString(i)) + ")").click();
+        //$(".js-news-feed-item:nth-child(".concat(Integer.toString(i)) + ")").click();
+        $$(".news-feed__item").get(i).scrollTo().click();
     }
     /*public String getLentaText( int i) {
         if (i != 4)

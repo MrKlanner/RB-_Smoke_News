@@ -7,10 +7,6 @@
             <listener class-name="org.testng.ITestListener" />
     </listeners>
 
-    <test name = "Title">
-<!--        <classes>
-            <class name = "Title" />
-        </classes>-->
-    </test>
-    <test name=""
+    <test name="Title"/>
+
  </suite>

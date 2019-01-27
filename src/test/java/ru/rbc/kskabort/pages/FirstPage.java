@@ -25,8 +25,8 @@ public class FirstPage {
     @FindBy(xpath = "//button[text()='Войти']")
     private WebElement loginButton;*/
 
-    public void closeSub() {CloseSubPushupButton.click(); System.out.println(ConsoleColors.GREEN_BOLD_BRIGHT + "PushUp с подпиской закрыт" + ConsoleColors.RESET);}
-    public void closeOpin() { TabActions.PressEscape();/*CloseOpinionPushupButton.click();*/ System.out.println(ConsoleColors.GREEN_BOLD_BRIGHT + "PushUp с опросом закрыт " + ConsoleColors.RESET);}
+    public void closeSub() {CloseSubPushupButton.click(); System.out.println(ConsoleColors.GREEN + "PushUp с подпиской закрыт" + ConsoleColors.RESET);}
+    public void closeOpin() { TabActions.PressEscape();/*CloseOpinionPushupButton.click();*/ System.out.println(ConsoleColors.GREEN + "PushUp с опросом закрыт " + ConsoleColors.RESET);}
     //#dcfdddaf_id_1546095617011 .dcfdddaf-close
     //#dcfdddaf_id_1546096300559 .dcfdddaf-close
 

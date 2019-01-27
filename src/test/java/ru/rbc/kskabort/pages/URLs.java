@@ -112,7 +112,7 @@ public class URLs {
         public static final String[] topline = {Prod.TV, Prod.NEWSPAPER, Prod.MAGAZINE, Prod.RBCPLUS, Prod.PRO, Prod.QUOTE, Prod.AUTO, Prod.SPORT,
                         Prod.REALTY, Prod.STYLE, Prod.CRYPTO, Prod.MARKETING, Other.BIZTORG, Other.FRANCHISES, Prod.BC,
                         Prod.AWARDS, Prod.AWARDS_SPB};
-        public static final String[] top_add = {Other.HEALTH, Prod.PINK, Prod.AWARDS.substring(0, 24)};
+        public static final String[] top_add = {Other.HEALTH, Prod.PINK, Prod.AWARDS.substring(0, 25)};
     }
 
     public static String SPLIT(String url, String ver)

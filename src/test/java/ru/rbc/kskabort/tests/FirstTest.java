@@ -16,13 +16,12 @@ import ru.rbc.kskabort.pages.SecondPage;
 import ru.rbc.kskabort.pages.StaticPageObjects;
 import ru.rbc.kskabort.pages.URLs;
 import ru.rbc.kskabort.pages.URLs.Prod;
-import ru.rbc.kskabort.pages.URLs.Staging;
 
 import java.awt.*;
 import java.util.ArrayList;
 
 import static com.codeborne.selenide.Browsers.CHROME;
-import static com.codeborne.selenide.Condition.*;
+import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.*;
 import static com.codeborne.selenide.WebDriverRunner.getWebDriver;
 import static com.codeborne.selenide.WebDriverRunner.url;
@@ -50,6 +49,7 @@ import org.openqa.selenium.WebElement;*/
 
 public class FirstTest extends Assert {
 
+    private final static String deafult_stand = SPLIT(Prod.NEWS, "10A");
     private static FirstPage firstPage;
     private static SecondPage secondPage;
     private static StaticPageObjects staticPageObjects;
@@ -107,9 +107,11 @@ public class FirstTest extends Assert {
     @BeforeSuite (description = "setup", alwaysRun = true)
     public static void setup()
     {
-        System.setProperty("webdriver.chrome.driver", "C:/Users/Kosta/Documents/chrome_driver/chromedriver.exe");
+        //System.setProperty("webdriver.chrome.driver", "scr/test/java/ru/rbc/kskabort/chrome_driver/chromedriver.exe");
+        System.setProperty("selenide.browser", "chrome");
         Configuration.browser = CHROME;
         Configuration.reopenBrowserOnFail = true;
+        //Configuration.pageLoadStrategy = "normal";
         //Configuration.startMaximized = true;
         //Configuration.baseUrl = SPLIT(Prod.NEWS, "10A");
         /*Для режима инкогнито
@@ -132,7 +134,7 @@ public class FirstTest extends Assert {
         open("");
         getWebDriver().manage().window().maximize();
 
-        try {open(SPLIT(Prod.NEWS, "10A"));}
+        try {open(deafult_stand);}
         catch (TimeoutException e)
         {
             TabActions.PressEscape();
@@ -156,7 +158,7 @@ public class FirstTest extends Assert {
    @BeforeTest (description = "Create new tab", alwaysRun = true)
     public void setup_before() throws InterruptedException, AWTException {
         TabActions.New();
-        ArrayList<String> tabs2 = new ArrayList<>(getWebDriver().getWindowHandles()); // Получение списка вкладок
+        ArrayList<String> tabs2 = get_tabs(); // Получение списка вкладок
         switchTo().window(tabs2.get(tabs2.size()-1));
         /*firstPage.closeSub();
         System.out.println(ConsoleColors.GREEN_BOLD_BRIGHT + "PushUp 2 закрыт" + ConsoleColors.RESET);*/
@@ -166,9 +168,10 @@ public class FirstTest extends Assert {
 
    @Test (description = "Title")
     public void test_title() {
-        open(SPLIT(Prod.NEWS, "v10"));
+        if(title().equals(""))
+            open(deafult_stand);
         assertEquals(title(), "РБК — новости, акции, курсы валют, доллар, евро");
-        System.out.println(ConsoleColors.GREEN_BOLD_BRIGHT + "Проверка TITLE успешно завершена" + ConsoleColors.RESET);
+        System.out.println(ConsoleColors.GREEN_BRIGHT + "Проверка TITLE успешно завершена" + ConsoleColors.RESET);
     }
 
     /**
@@ -176,17 +179,20 @@ public class FirstTest extends Assert {
      *
      * Топлайн (+)*/
 
-    @Test (description = "Topline links")
+    @Test (description = "topline_links", dependsOnMethods = "test_title")
     //ГЛАВНАЯ. ТОПЛАЙН.
     public void test_topline() throws InterruptedException, AWTException {
         Actions actions = new Actions(getWebDriver());
-        open(SPLIT(Prod.NEWS, "10A"));
+        open(deafult_stand);
         firstPage.closeOpin();/*TabActions.PressEscape();*/
+
+        //ArrayList<String> tabs = get_tabs(); // Получение списка вкладок
+        int start_count_of_tabs = get_tabs().size();
 
         //Проверка эмблемы из топлайна
         actions.keyDown(Keys.LEFT_CONTROL).click(staticPageObjects.toplineLogo).keyUp(Keys.LEFT_CONTROL).build().perform();
 
-        ArrayList<String> tabs = new ArrayList<>(getWebDriver().getWindowHandles()); // Получение списка вкладок
+        ArrayList<String> tabs = get_tabs(); // Получение списка вкладок
         switchTo().window(tabs.get(2));// Переключение на третью вкладку
         assertEquals(url(), Prod.NEWS);
         TabActions.Close();
@@ -227,10 +233,10 @@ public class FirstTest extends Assert {
         for (int i = 0; i < MAX_INDEX_TOP; i++) {
             actions.keyDown(Keys.LEFT_CONTROL).click(staticPageObjects.getTopItem(i, "common", MAX_INDEX_TOP, MAX_INDEX_TOP_ADD)).keyUp(Keys.LEFT_CONTROL).build().perform();
 
-            tabs = new ArrayList<>(getWebDriver().getWindowHandles());
+            tabs = get_tabs();
             switchTo().window(tabs.get(2));// Переключение на третью вкладку
             try {
-                assertEquals(mass[i] + "?utm_source=topline", url());
+                assertEquals(url(), mass[i] + "?utm_source=topline");
             } catch (AssertionError c) {
                 //if (!url().contains(cleanUrlSimple(mass[i])))
                 System.out.println(c);
@@ -240,9 +246,9 @@ public class FirstTest extends Assert {
             TabActions.Close();
             switchTo().window(tabs.get(1));// Перключение на вторую вкладку
             tabs.remove(2);
-            tabs = new ArrayList<>(getWebDriver().getWindowHandles());
+            tabs = get_tabs();
             if (tabs.size() >= 3) {
-                for (int tb_i = tabs.size() - 1; tb_i >= 2; tb_i--)// Проверка количества вкладок
+                for (int tb_i = tabs.size() - 1; tb_i >= start_count_of_tabs; tb_i--)// Проверка количества вкладок
                 {
                     switchTo().window(tabs.get(tb_i));// Перключение на последнюю вкладку
                     TabActions.Close();
@@ -257,14 +263,14 @@ public class FirstTest extends Assert {
         for (int i = 0; i < MAX_INDEX_TOP_ADD; i++) {
             actions.keyDown(Keys.LEFT_CONTROL).click(staticPageObjects.getTopItem(i, "add", MAX_INDEX_TOP, MAX_INDEX_TOP_ADD)).keyUp(Keys.LEFT_CONTROL).build().perform();
 
-            tabs = new ArrayList<>(getWebDriver().getWindowHandles());
+            tabs = get_tabs();
             switchTo().window(tabs.get(2));// Переключение на третью вкладку
 
             int k;
             for (k = 0; k < len_add; k++){
                 if (url().contains(mass_add[k])) {
                     try {
-                        assertEquals(mass_add[k], url());
+                        assertEquals(url(), mass_add[k]);
                     } catch (AssertionError c) {
                         //if (!url().contains(cleanUrlSimple(mass[i])))
                         System.out.println(c);
@@ -276,9 +282,9 @@ public class FirstTest extends Assert {
             TabActions.Close();
             switchTo().window(tabs.get(1));// Перключение на вторую вкладку
             tabs.remove(2);
-            tabs = new ArrayList<>(getWebDriver().getWindowHandles());
+            tabs = get_tabs();
             if (tabs.size() >= 3) {
-                for (int tb_i = tabs.size() - 1; tb_i >= 2; tb_i--)// Проверка количества вкладок
+                for (int tb_i = tabs.size() - 1; tb_i >= start_count_of_tabs; tb_i--)// Проверка количества вкладок
                 {
                     switchTo().window(tabs.get(tb_i));// Перключение на последнюю вкладку
                     TabActions.Close();
@@ -288,13 +294,13 @@ public class FirstTest extends Assert {
             }
         }
         if (allUrlsIsCorrect) System.out.println(ConsoleColors.YELLOW_BOLD_BRIGHT + "Проверка ТОПЛАЙНА успешно завершена!" + ConsoleColors.RESET);
-        else throw new Error ("Проверка ТОПЛАЙНА провалена!");
+        else throw new Error (ConsoleColors.RED_BOLD + "Проверка ТОПЛАЙНА провалена!" + ConsoleColors.RED_BOLD);
     }
 
-    @Test
+    @Test (description = "search", dependsOnMethods = "test_title")
     //ПОИСК
     public void test_search() {
-        open(SPLIT(Staging.NEWS, "v10"));
+        open(deafult_stand);
         String t = "Путин";
         firstPage.closeOpin();
         staticPageObjects.searchQuery(t);
@@ -308,37 +314,55 @@ public class FirstTest extends Assert {
                 throw new Error ("Проверка поиска провалена!");
             }
         }
-        System.out.println(ConsoleColors.GREEN_BOLD_BRIGHT + "Проверка ПОИСКА успешно завершена" + ConsoleColors.RESET);
+        System.out.println(ConsoleColors.GREEN_BRIGHT + "Проверка ПОИСКА успешно завершена" + ConsoleColors.RESET);
     }
 
     /** Лента новостей (+) */
 
-    @Test
+    @Test (description = "news_line")
     //ЛЕНТА НОВОСТЕЙ
-    public void test_lenta() {
-
-        int n = 2;
-        //Лента новостей. Часть 1 (Сравнить url ленты новостей с продом)
+    public void test_lenta() throws AWTException, InterruptedException {
+        int n = 20;
         open(SPLIT(Prod.NEWS, "10A"));
-        String lenta_text = staticPageObjects.getLentaUrl(n);
-        open(SPLIT(Staging.NEWS, "10A"));
-        String lenta_text1 = staticPageObjects.getLentaUrl(n);
-        assertEquals(cleanUrl(lenta_text), cleanUrl(lenta_text1));
-        System.out.println(ConsoleColors.YELLOW_BOLD_BRIGHT + "Проверка ЛЕНТЫ НОВОСТЕЙ (Часть 1) успешно завершена" + ConsoleColors.RESET);
+        TabActions.New();
+        int num_of_tabs = get_tabs().size()-1; //-1 так как массив от 0
+        switchTo().window(get_tabs().get(num_of_tabs)); //переключение на последюю вкладку
+        open(deafult_stand);
+        //Лента новостей. Часть 1 (Сравнить url ленты новостей с продом)
+        for (int i = 1; i <= n; i++)
+        {
+            if (i != 4 && i !=16 /*&& i != 28 && i != 40 && i != 52 && i != 64*/)
+            {
+                String lenta_text = staticPageObjects.getLentaUrl(i);
+                switchTo().window(get_tabs().get(num_of_tabs-1));
+                String lenta_text1 = staticPageObjects.getLentaUrl(i);
+                assertEquals(cleanUrl(lenta_text), cleanUrl(lenta_text1));
+                switchTo().window(get_tabs().get(num_of_tabs));
+            }
+        }
+        TabActions.Close();
+        num_of_tabs--;
+        System.out.println(ConsoleColors.GREEN_BRIGHT + "Проверка ЛЕНТЫ НОВОСТЕЙ (Часть 1) успешно завершена" + ConsoleColors.RESET);
 
+        boolean flag = true;
         //Лента новостей. Часть 2 (Проверка редиректа)
-        open(SPLIT(Staging.NEWS, "10A"));
-        String lenta_url = staticPageObjects.getLentaUrl(n); // доработать
-        staticPageObjects.clickLenta(n);
-        if (url().contains(cleanUrl(lenta_url)))
-            System.out.println(ConsoleColors.YELLOW_BOLD_BRIGHT + "Проверка ЛЕНТЫ НОВОСТЕЙ (Часть 2) успешно завершена" + ConsoleColors.RESET);
+        for (int i = 1; i < n; i++) {
+            switchTo().window(get_tabs().get(num_of_tabs));
+            open(deafult_stand);
+            String lenta_url = staticPageObjects.getLentaUrl(i); // доработать
+            staticPageObjects.clickLenta(i);
+            if (!url().contains(cleanUrl(lenta_url)))
+                throw new Error(ConsoleColors.RED + "Ошибка при проверке ссылок на редиректы!" + ConsoleColors.RESET);
+            TabActions.Page_back();
+        }
+        System.out.println(ConsoleColors.GREEN_BRIGHT + "Проверка ЛЕНТЫ НОВОСТЕЙ (Часть 2) успешно завершена" + ConsoleColors.RESET);
     }
 
     /** Прямой эфир (+-) */
 
     @Test
     public void test_online() {
-        open(SPLIT(Prod.NEWS, "10A"));
+        open(deafult_stand);
         TabActions.PressEscape();
         /*try {open(SPLIT(Prod.NEWS, "10A"));}
         catch (TimeoutException ingore)
@@ -393,6 +417,7 @@ public class FirstTest extends Assert {
         $(".vjs-big-play-button").click();sleep(1000);
         $(".vjs-fullscreen-control").click(); //Выход из фуллскрина
         */
+        System.out.println(ConsoleColors.GREEN_BRIGHT + "Проверка онлайна завершена успешно!" + ConsoleColors.RESET);
     }
 
     @Test
@@ -401,14 +426,15 @@ public class FirstTest extends Assert {
         for (String i : secondPage.getSecondPagesUrls("prod"))
         {
             open(i);
-            assertFalse(title().contains("РБК") && !title().contains("404"),ConsoleColors.RED_BOLD_BRIGHT + "Страница недоступна!\nТайтл страницы: " + title()
+            assertTrue(title().contains("РБК") && !title().contains("404"),ConsoleColors.RED_BOLD_BRIGHT + "Страница недоступна!\nТайтл страницы: " + title()
                     + ConsoleColors.RESET);
         }
+        System.out.println(ConsoleColors.GREEN_BRIGHT + "Проверка вторых страниц успешно завершена!" + ConsoleColors.RESET);
     }
 
     @AfterClass()
     public static void tearDown() {
-        System.out.println(ConsoleColors.YELLOW_BOLD_BRIGHT + "Смок-тест завершен" + ConsoleColors.RESET);
+        System.out.println(ConsoleColors.GREEN_BRIGHT + "Смок-тест завершен" + ConsoleColors.RESET);
     }
 
 /**-----------------------------------------------------------------------------------------------------------------------*/
@@ -428,6 +454,12 @@ public class FirstTest extends Assert {
         catch (NoSuchElementException ignore) {
         }
     }*/
+
+    private ArrayList<String> get_tabs()
+    {
+        ArrayList<String> tabs = new ArrayList<>(getWebDriver().getWindowHandles());
+        return tabs;
+    }
 
     private String cleanUrl (String lnk)
     {

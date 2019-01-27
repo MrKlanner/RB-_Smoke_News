@@ -14,7 +14,7 @@ public class SecondPage extends StaticPageObjects {
     //private SelenideElement searchQuerys = $(".search-item:nth-child(1) .search-item__text");
 
     public String serchQuerys(int i) {
-        return $(".search-item:nth-child(".concat(Integer.toString(i)) + ") span.search-item__text").getText();
+        return $(".search-item:nth-child(".concat(Integer.toString(i)) + ") .search-item__text").getText();
     }
 
     public String[] getSecondPagesUrls (String project) {
