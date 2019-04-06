@@ -5,9 +5,7 @@ import com.codeborne.selenide.SelenideElement;
 import org.openqa.selenium.interactions.Actions;
 import ru.rbc.kskabort.ConsoleColors;
 
-import static com.codeborne.selenide.Selenide.$;
-import static com.codeborne.selenide.Selenide.$$;
-import static com.codeborne.selenide.Selenide.sleep;
+import static com.codeborne.selenide.Selenide.*;
 import static com.codeborne.selenide.WebDriverRunner.getWebDriver;
 
 public class StaticPageObjects {
@@ -101,9 +99,20 @@ public class StaticPageObjects {
             return $(".news-feed__item:nth-child(".concat(Integer.toString(i)) + ")").scrollTo().attr("href");
         else return new Error(ConsoleColors.RED_BOLD + "No such lenta element"+ ConsoleColors.RESET).getMessage();
     }
+
+    public String getLentaTitle(int i){
+        if (i != 4 && i !=16 && i != 28 && i != 40 && i != 52 && i != 64)
+/*            return $(".news-feed__item:nth-child(".concat(Integer.toString(i)) + ")").attr("href");
+        if (i%5 == 0)*/
+            return $(".news-feed__item:nth-child(".concat(Integer.toString(i)) + ") .news-feed__item__title").scrollTo().getText();
+        else return new Error(ConsoleColors.RED_BOLD + "No such lenta element"+ ConsoleColors.RESET).getMessage();
+    }
+
+    /**Исправлять надо!!!*/
     public void clickLenta( int i) {
-        //$(".js-news-feed-item:nth-child(".concat(Integer.toString(i)) + ")").click();
-        $$(".news-feed__item").get(i).scrollTo().click();
+        if (i != 4 && i !=16 && i != 28 && i != 40 && i != 52 && i != 64)
+            $(".js-news-feed-item:nth-child(".concat(Integer.toString(i)) + ")").scrollTo().click();
+            //$$(".news-feed__item").get(i).scrollTo().click(); //.news-feed__item__title
     }
     /*public String getLentaText( int i) {
         if (i != 4)
@@ -116,7 +125,7 @@ public class StaticPageObjects {
         final int MAX_INDEX_TOP_ADD = 2;*/
          if (i < max_c && s.equals("common")) {
              i += 1;
-             return $(".topline__item:nth-child(".concat(Integer.toString(i)) + ")");
+             return $(".topline__item-block:nth-child(".concat(Integer.toString(i)) + ")");
          }
          else if (i < max_add && s.equals("add")) {
              i += 1;

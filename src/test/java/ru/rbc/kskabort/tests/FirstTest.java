@@ -346,14 +346,14 @@ public class FirstTest extends Assert {
 
         boolean flag = true;
         //Лента новостей. Часть 2 (Проверка редиректа)
+        switchTo().window(get_tabs().get(num_of_tabs));
+        open(deafult_stand);
         for (int i = 1; i < n; i++) {
-            switchTo().window(get_tabs().get(num_of_tabs));
-            open(deafult_stand);
             String lenta_url = staticPageObjects.getLentaUrl(i); // доработать
             staticPageObjects.clickLenta(i);
             if (!url().contains(cleanUrl(lenta_url)))
-                throw new Error(ConsoleColors.RED + "Ошибка при проверке ссылок на редиректы!" + ConsoleColors.RESET);
-            TabActions.Page_back();
+                throw new Error(ConsoleColors.RED + "Ошибка при проверке ссылок на редиректы!\nExpected: " + lenta_url + "\nActual: " + url() + ConsoleColors.RESET);
+            staticPageObjects.toplineLogo.click();
         }
         System.out.println(ConsoleColors.GREEN_BRIGHT + "Проверка ЛЕНТЫ НОВОСТЕЙ (Часть 2) успешно завершена" + ConsoleColors.RESET);
     }
