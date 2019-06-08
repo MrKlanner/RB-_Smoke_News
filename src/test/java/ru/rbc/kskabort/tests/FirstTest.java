@@ -52,7 +52,7 @@ public class FirstTest {
 
     @BeforeClass
     public static void setup() throws InterruptedException, AWTException {
-        System.setProperty("webdriver.chrome.driver", "C:/Users/kskabort/Documents/chrome_driver/chromedriver.exe");
+        System.setProperty("webdriver.chrome.driver", "C:/chrome_driver/chromedriver.exe");
         Configuration.browser = CHROME;
         Configuration.startMaximized = true;
         //Configuration.baseUrl = SPLIT(Prod.NEWS, "10A");
